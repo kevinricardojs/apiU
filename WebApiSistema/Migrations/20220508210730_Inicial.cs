@@ -4,7 +4,7 @@ using MySql.EntityFrameworkCore.Metadata;
 
 namespace WebApiSistema.Migrations
 {
-    public partial class InitialMigration : Migration
+    public partial class Inicial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -30,13 +30,11 @@ namespace WebApiSistema.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(type: "text", nullable: true),
-                    LastName = table.Column<string>(type: "text", nullable: true),
-                    SecondLastName = table.Column<string>(type: "text", nullable: true),
-                    DateOfBirth = table.Column<DateTime>(type: "datetime", nullable: false),
-                    Created = table.Column<DateTime>(type: "datetime", nullable: false),
-                    LastActive = table.Column<DateTime>(type: "datetime", nullable: false),
+                    Nombres = table.Column<string>(type: "text", nullable: true),
+                    Apellidos = table.Column<string>(type: "text", nullable: true),
                     Status = table.Column<int>(type: "int", nullable: false),
+                    Empresa = table.Column<int>(type: "int", nullable: false),
+                    Sucursal = table.Column<int>(type: "int", nullable: false),
                     UserName = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: true),
@@ -58,6 +56,20 @@ namespace WebApiSistema.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Empresa",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    Nombre = table.Column<string>(type: "text", nullable: true),
+                    Direccion = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Empresa", x => x.ID);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Menu",
                 columns: table => new
                 {
@@ -65,9 +77,7 @@ namespace WebApiSistema.Migrations
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     Path = table.Column<string>(type: "text", nullable: true),
                     Title = table.Column<string>(type: "text", nullable: true),
-                    Icon = table.Column<string>(type: "text", nullable: true),
-                    ParentId = table.Column<int>(type: "int", nullable: false),
-                    Status = table.Column<int>(type: "int", nullable: false)
+                    Icon = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -120,8 +130,8 @@ namespace WebApiSistema.Migrations
                 name: "AspNetUserLogins",
                 columns: table => new
                 {
-                    LoginProvider = table.Column<string>(type: "varchar(250)", nullable: false),
-                    ProviderKey = table.Column<string>(type: "varchar(250)", nullable: false),
+                    LoginProvider = table.Column<string>(type: "varchar(100)", nullable: false),
+                    ProviderKey = table.Column<string>(type: "varchar(100)", nullable: false),
                     ProviderDisplayName = table.Column<string>(type: "text", nullable: true),
                     UserId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -165,8 +175,8 @@ namespace WebApiSistema.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<int>(type: "int", nullable: false),
-                    LoginProvider = table.Column<string>(type: "varchar(250)", nullable: false),
-                    Name = table.Column<string>(type: "varchar(250)", nullable: false),
+                    LoginProvider = table.Column<string>(type: "varchar(100)", nullable: false),
+                    Name = table.Column<string>(type: "varchar(100)", nullable: false),
                     Value = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
@@ -177,6 +187,27 @@ namespace WebApiSistema.Migrations
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Sucursal",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    Descripcion = table.Column<string>(type: "text", nullable: true),
+                    Direccion = table.Column<string>(type: "text", nullable: true),
+                    EmpresaID = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Sucursal", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Sucursal_Empresa_EmpresaID",
+                        column: x => x.EmpresaID,
+                        principalTable: "Empresa",
+                        principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -245,6 +276,11 @@ namespace WebApiSistema.Migrations
                 name: "IX_RoleMenu_MenuId",
                 table: "RoleMenu",
                 column: "MenuId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Sucursal_EmpresaID",
+                table: "Sucursal",
+                column: "EmpresaID");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -268,6 +304,9 @@ namespace WebApiSistema.Migrations
                 name: "RoleMenu");
 
             migrationBuilder.DropTable(
+                name: "Sucursal");
+
+            migrationBuilder.DropTable(
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
@@ -275,6 +314,9 @@ namespace WebApiSistema.Migrations
 
             migrationBuilder.DropTable(
                 name: "Menu");
+
+            migrationBuilder.DropTable(
+                name: "Empresa");
         }
     }
 }

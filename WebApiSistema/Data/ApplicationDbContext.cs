@@ -4,6 +4,9 @@ using Microsoft.EntityFrameworkCore;
 using WebApiSistema.Models.Presupuesto;
 using WebApiSistema.Models.Configuraciones;
 using WebApiSistema.Models.Usuario;
+using WebApiSistema.Models.Compra;
+using WebApiSistema.Models.Productos;
+using WebApiSistema.Models.Transacciones;
 
 namespace WebApiSistema.Data
 {
@@ -17,8 +20,30 @@ namespace WebApiSistema.Data
         public DbSet<Menu> Menu { get; set; }
 
         public DbSet<RoleMenu> RoleMenu { get; set; }
+
+        // Configuraciones
         public DbSet<Empresa> Empresa { get; set; }
         public DbSet<Sucursal> Sucursal { get; set; }
+
+        // Compras
+        public DbSet<Compra> Compra { get; set; }
+        public DbSet<CompraDetalle> CompraDetalle { get; set; }
+
+        // Presupuesto
+        public DbSet<Cuenta> Cuenta { get; set; }
+        public DbSet<CuentaPresupuesto> CuentaPresupuesto { get; set; }
+
+        // Productos
+        public DbSet<Producto> Producto { get; set; }
+        public DbSet<ProductoTipo> ProductoTipo { get; set; }
+        public DbSet<FamiliaProducto> FamiliaProducto { get; set; }
+
+        // Transacciones
+        public DbSet<TransaccionContable> TransaccionContable { get; set; }
+        public DbSet<TransaccionDetalleContable> TransaccionDetalleContable { get; set; }
+        public DbSet<TransaccionInventario> TransaccionInventario { get; set; }
+        public DbSet<TransaccionDetalleInventario> TransaccionDetalleInventario { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

@@ -101,7 +101,7 @@ namespace WebApiSistema.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("WebApiSistema.Models.Empresa", b =>
+            modelBuilder.Entity("WebApiSistema.Models.Configuraciones.Empresa", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -118,7 +118,29 @@ namespace WebApiSistema.Migrations
                     b.ToTable("Empresa");
                 });
 
-            modelBuilder.Entity("WebApiSistema.Models.Menu", b =>
+            modelBuilder.Entity("WebApiSistema.Models.Configuraciones.Sucursal", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("Descripcion")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Direccion")
+                        .HasColumnType("text");
+
+                    b.Property<int>("EmpresaID")
+                        .HasColumnType("int");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("EmpresaID");
+
+                    b.ToTable("Sucursal");
+                });
+
+            modelBuilder.Entity("WebApiSistema.Models.Usuario.Menu", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -127,14 +149,8 @@ namespace WebApiSistema.Migrations
                     b.Property<string>("Icon")
                         .HasColumnType("text");
 
-                    b.Property<int>("ParentId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Path")
                         .HasColumnType("text");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .HasColumnType("text");
@@ -144,7 +160,7 @@ namespace WebApiSistema.Migrations
                     b.ToTable("Menu");
                 });
 
-            modelBuilder.Entity("WebApiSistema.Models.Role", b =>
+            modelBuilder.Entity("WebApiSistema.Models.Usuario.Role", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -174,7 +190,7 @@ namespace WebApiSistema.Migrations
                     b.ToTable("AspNetRoles");
                 });
 
-            modelBuilder.Entity("WebApiSistema.Models.RoleMenu", b =>
+            modelBuilder.Entity("WebApiSistema.Models.Usuario.RoleMenu", b =>
                 {
                     b.Property<int>("RoleId")
                         .HasColumnType("int");
@@ -189,26 +205,7 @@ namespace WebApiSistema.Migrations
                     b.ToTable("RoleMenu");
                 });
 
-            modelBuilder.Entity("WebApiSistema.Models.Sucursal", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<string>("Descripcion")
-                        .HasColumnType("text");
-
-                    b.Property<int?>("EmpresaID")
-                        .HasColumnType("int");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("EmpresaID");
-
-                    b.ToTable("Sucursal");
-                });
-
-            modelBuilder.Entity("WebApiSistema.Models.User", b =>
+            modelBuilder.Entity("WebApiSistema.Models.Usuario.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -217,15 +214,12 @@ namespace WebApiSistema.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
+                    b.Property<string>("Apellidos")
+                        .HasColumnType("text");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("text");
-
-                    b.Property<DateTime>("Created")
-                        .HasColumnType("datetime");
-
-                    b.Property<DateTime>("DateOfBirth")
-                        .HasColumnType("datetime");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
@@ -237,19 +231,13 @@ namespace WebApiSistema.Migrations
                     b.Property<int>("Empresa")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("LastActive")
-                        .HasColumnType("datetime");
-
-                    b.Property<string>("LastName")
-                        .HasColumnType("text");
-
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("timestamp");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("Nombres")
                         .HasColumnType("text");
 
                     b.Property<string>("NormalizedEmail")
@@ -268,9 +256,6 @@ namespace WebApiSistema.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("tinyint(1)");
-
-                    b.Property<string>("SecondLastName")
-                        .HasColumnType("text");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text");
@@ -300,7 +285,7 @@ namespace WebApiSistema.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("WebApiSistema.Models.UserRole", b =>
+            modelBuilder.Entity("WebApiSistema.Models.Usuario.UserRole", b =>
                 {
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -317,7 +302,7 @@ namespace WebApiSistema.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
-                    b.HasOne("WebApiSistema.Models.Role", null)
+                    b.HasOne("WebApiSistema.Models.Usuario.Role", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -326,7 +311,7 @@ namespace WebApiSistema.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
                 {
-                    b.HasOne("WebApiSistema.Models.User", null)
+                    b.HasOne("WebApiSistema.Models.Usuario.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -335,7 +320,7 @@ namespace WebApiSistema.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
                 {
-                    b.HasOne("WebApiSistema.Models.User", null)
+                    b.HasOne("WebApiSistema.Models.Usuario.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -344,22 +329,33 @@ namespace WebApiSistema.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
                 {
-                    b.HasOne("WebApiSistema.Models.User", null)
+                    b.HasOne("WebApiSistema.Models.Usuario.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("WebApiSistema.Models.RoleMenu", b =>
+            modelBuilder.Entity("WebApiSistema.Models.Configuraciones.Sucursal", b =>
                 {
-                    b.HasOne("WebApiSistema.Models.Menu", "Menu")
+                    b.HasOne("WebApiSistema.Models.Configuraciones.Empresa", "Empresa")
+                        .WithMany("Sucursales")
+                        .HasForeignKey("EmpresaID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Empresa");
+                });
+
+            modelBuilder.Entity("WebApiSistema.Models.Usuario.RoleMenu", b =>
+                {
+                    b.HasOne("WebApiSistema.Models.Usuario.Menu", "Menu")
                         .WithMany("RoleMenus")
                         .HasForeignKey("MenuId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("WebApiSistema.Models.Role", "Role")
+                    b.HasOne("WebApiSistema.Models.Usuario.Role", "Role")
                         .WithMany("RoleMenus")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -370,24 +366,15 @@ namespace WebApiSistema.Migrations
                     b.Navigation("Role");
                 });
 
-            modelBuilder.Entity("WebApiSistema.Models.Sucursal", b =>
+            modelBuilder.Entity("WebApiSistema.Models.Usuario.UserRole", b =>
                 {
-                    b.HasOne("WebApiSistema.Models.Empresa", "Empresa")
-                        .WithMany()
-                        .HasForeignKey("EmpresaID");
-
-                    b.Navigation("Empresa");
-                });
-
-            modelBuilder.Entity("WebApiSistema.Models.UserRole", b =>
-                {
-                    b.HasOne("WebApiSistema.Models.Role", "Role")
+                    b.HasOne("WebApiSistema.Models.Usuario.Role", "Role")
                         .WithMany("UserRoles")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("WebApiSistema.Models.User", "User")
+                    b.HasOne("WebApiSistema.Models.Usuario.User", "User")
                         .WithMany("UserRoles")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -398,19 +385,24 @@ namespace WebApiSistema.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("WebApiSistema.Models.Menu", b =>
+            modelBuilder.Entity("WebApiSistema.Models.Configuraciones.Empresa", b =>
+                {
+                    b.Navigation("Sucursales");
+                });
+
+            modelBuilder.Entity("WebApiSistema.Models.Usuario.Menu", b =>
                 {
                     b.Navigation("RoleMenus");
                 });
 
-            modelBuilder.Entity("WebApiSistema.Models.Role", b =>
+            modelBuilder.Entity("WebApiSistema.Models.Usuario.Role", b =>
                 {
                     b.Navigation("RoleMenus");
 
                     b.Navigation("UserRoles");
                 });
 
-            modelBuilder.Entity("WebApiSistema.Models.User", b =>
+            modelBuilder.Entity("WebApiSistema.Models.Usuario.User", b =>
                 {
                     b.Navigation("UserRoles");
                 });

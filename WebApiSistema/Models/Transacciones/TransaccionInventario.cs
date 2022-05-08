@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace WebApiSistema.Models.Transacciones
@@ -10,5 +11,6 @@ namespace WebApiSistema.Models.Transacciones
         public DateTime FechaHora { get; set; }
         public int Tipo { get; set; }
         public int CompraVentaID { get; set; }
+        public ICollection<TransaccionDetalleInventario> Detalles { get; set; }
     }
 }

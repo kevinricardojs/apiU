@@ -9,9 +9,9 @@ using WebApiSistema.Data;
 using WebApiSistema.DTO.Sucursal;
 using WebApiSistema.Models.Configuraciones;
 
-namespace WebApiSistema.Controllers
+namespace WebApiSistema.Controllers.Configuraciones
 {
-    [Route("api/[controller]")]
+    [Route("configuraciones/[controller]")]
     [ApiController]
     public class SucursalesController : ControllerBase
     {
