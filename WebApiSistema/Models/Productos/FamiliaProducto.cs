@@ -1,14 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using WebApiSistema.Models.Configuraciones;
+using WebApiSistema.Models.Presupuesto;
 
 namespace WebApiSistema.Models.Productos
 {
-    public class ProductoTipo
+    public class FamiliaProducto
     {
         [Key]
         public int ID { get; set; }
         public string Descripcion { get; set; }
-        public int SucursalID { get; set; }
-        public Sucursal Sucursal { get; set; }
+        public int CuentaID { get; set; }
+        public Cuenta Cuenta { get; set; }
     }
 }
