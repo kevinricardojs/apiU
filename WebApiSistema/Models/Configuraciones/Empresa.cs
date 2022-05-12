@@ -8,7 +8,7 @@ namespace WebApiSistema.Models.Configuraciones
         [Key]
         public int ID { get; set; }
         public string Nombre { get; set; }
-        public string Direccion { get; set; }
+        public string Nit { get; set; }
         public ICollection<Sucursal> Sucursales { get; set; }
     }
 }

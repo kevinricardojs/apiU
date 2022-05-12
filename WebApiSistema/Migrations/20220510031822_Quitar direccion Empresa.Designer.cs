@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebApiSistema.Data;
 
 namespace WebApiSistema.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220510031822_Quitar direccion Empresa")]
+    partial class QuitardireccionEmpresa
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -107,8 +109,8 @@ namespace WebApiSistema.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("FacturaFecha")
-                        .HasColumnType("datetime");
+                    b.Property<string>("FacturaFecha")
+                        .HasColumnType("text");
 
                     b.Property<string>("FacturaSerie")
                         .HasColumnType("text");
@@ -162,9 +164,6 @@ namespace WebApiSistema.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<string>("Nit")
-                        .HasColumnType("text");
-
                     b.Property<string>("Nombre")
                         .HasColumnType("text");
 
@@ -190,9 +189,6 @@ namespace WebApiSistema.Migrations
 
                     b.Property<string>("Telefono")
                         .HasColumnType("text");
-
-                    b.Property<int>("Tipo")
-                        .HasColumnType("int");
 
                     b.HasKey("ID");
 
@@ -226,9 +222,6 @@ namespace WebApiSistema.Migrations
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    b.Property<string>("CodigoCuenta")
-                        .HasColumnType("text");
 
                     b.Property<string>("Descripcion")
                         .HasColumnType("text");
@@ -299,9 +292,6 @@ namespace WebApiSistema.Migrations
                     b.Property<string>("Descripcion")
                         .HasColumnType("text");
 
-                    b.Property<int>("FamiliaProductoID")
-                        .HasColumnType("int");
-
                     b.Property<decimal>("Precio")
                         .HasColumnType("decimal(18, 2)");
 
@@ -312,8 +302,6 @@ namespace WebApiSistema.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("ID");
-
-                    b.HasIndex("FamiliaProductoID");
 
                     b.HasIndex("ProductoTipoID");
 
@@ -726,12 +714,6 @@ namespace WebApiSistema.Migrations
 
             modelBuilder.Entity("WebApiSistema.Models.Productos.Producto", b =>
                 {
-                    b.HasOne("WebApiSistema.Models.Productos.FamiliaProducto", "FamiliaProducto")
-                        .WithMany()
-                        .HasForeignKey("FamiliaProductoID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("WebApiSistema.Models.Productos.ProductoTipo", "ProductoTipo")
                         .WithMany()
                         .HasForeignKey("ProductoTipoID")
@@ -743,8 +725,6 @@ namespace WebApiSistema.Migrations
                         .HasForeignKey("SucursalID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("FamiliaProducto");
 
                     b.Navigation("ProductoTipo");
 

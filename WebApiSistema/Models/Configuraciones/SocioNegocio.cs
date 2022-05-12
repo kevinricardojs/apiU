@@ -10,5 +10,6 @@ namespace WebApiSistema.Models.Configuraciones
         public string Telefono { get; set; }
         public string Direccion { get; set; }
         public string Nit { get; set; }
+        public int Tipo { get; set; }
     }
 }

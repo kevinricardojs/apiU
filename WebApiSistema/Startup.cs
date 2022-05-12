@@ -19,6 +19,7 @@ using System.Threading.Tasks;
 using WebApiSistema.Data;
 using WebApiSistema.Models.Usuario;
 using WebApiSistema.Services;
+using WebApiSistema.Services.Transacciones;
 
 namespace WebApiSistema
 {
@@ -65,6 +66,8 @@ namespace WebApiSistema
 
             // Singletons
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ITransaccionInventario, TransaccionInventario>();
+            services.AddSingleton<IDirectDB, DirectDB>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebApiSistema", Version = "v1" });

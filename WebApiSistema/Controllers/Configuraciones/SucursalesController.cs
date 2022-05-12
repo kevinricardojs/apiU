@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebApiSistema.Data;
-using WebApiSistema.DTO.Sucursal;
+using WebApiSistema.DTO.Configuraciones.Sucursal;
 using WebApiSistema.Models.Configuraciones;
 
 namespace WebApiSistema.Controllers.Configuraciones
@@ -46,14 +46,17 @@ namespace WebApiSistema.Controllers.Configuraciones
         // PUT: api/Sucursales/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutSucursal(int id, Sucursal sucursal)
+        public async Task<IActionResult> PutSucursal(int id, SucursalCreate sucursal)
         {
-            if (id != sucursal.ID)
+            Sucursal s = new Sucursal
             {
-                return BadRequest();
-            }
+                ID = id,
+                Descripcion = sucursal.Descripcion,
+                Direccion = sucursal.Direccion,
+                EmpresaID = sucursal.EmpresaID
+            };
 
-            _context.Entry(sucursal).State = EntityState.Modified;
+            _context.Entry(s).State = EntityState.Modified;
 
             try
             {
@@ -82,7 +85,8 @@ namespace WebApiSistema.Controllers.Configuraciones
             Sucursal s = new Sucursal
             {
                 Descripcion = sucursal.Descripcion,
-                EmpresaID = sucursal.EmpresaID
+                EmpresaID = sucursal.EmpresaID,
+                Direccion = sucursal.Direccion
             };
             _context.Sucursal.Add(s);
             await _context.SaveChangesAsync();

@@ -14,5 +14,7 @@ namespace WebApiSistema.Models.Productos
         public Decimal Precio { get; set; }
         public int SucursalID { get; set; }
         public Sucursal Sucursal { get; set; }
+        public int FamiliaProductoID { get; set; }
+        public FamiliaProducto FamiliaProducto { get; set; }
     }
 }

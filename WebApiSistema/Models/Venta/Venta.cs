@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using WebApiSistema.Models.Configuraciones;
 
-namespace WebApiSistema.Models.Compra
+namespace WebApiSistema.Models.Venta
 {
-    public class Compra
+    public class Venta
     {
         [Key]
         public int ID { get; set; }
@@ -14,6 +14,6 @@ namespace WebApiSistema.Models.Compra
         public DateTime FechaHora { get; set; }
         public string FacturaSerie { get; set; }
         public DateTime FacturaFecha { get; set; }
-        public ICollection<CompraDetalle> Detalles { get; set; }
+        public ICollection<VentaDetalle> Detalles { get; set; }
     }
 }

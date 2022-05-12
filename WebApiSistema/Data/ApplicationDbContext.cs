@@ -26,7 +26,7 @@ namespace WebApiSistema.Data
         public DbSet<Sucursal> Sucursal { get; set; }
 
         // Compras
-        public DbSet<Compra> Compra { get; set; }
+        public DbSet<Venta> Compra { get; set; }
         public DbSet<CompraDetalle> CompraDetalle { get; set; }
 
         // Presupuesto
@@ -80,5 +80,8 @@ namespace WebApiSistema.Data
                     .IsRequired();
             });
         }
+
+
+        public DbSet<WebApiSistema.Models.Configuraciones.SocioNegocio> SocioNegocio { get; set; }
     }
 }
