@@ -52,7 +52,8 @@ namespace WebApiSistema.Controllers.Productos
             {
                 ID = id,
                 Descripcion = familiaProducto.Descripcion,
-                CuentaID = familiaProducto.CuentaID
+                CuentaID = familiaProducto.CuentaID,
+                CuentaIDO = familiaProducto.CuentaIDO
             };
 
             _context.Entry(f).State = EntityState.Modified;
@@ -85,7 +86,8 @@ namespace WebApiSistema.Controllers.Productos
             FamiliaProducto f = new FamiliaProducto
             {
                 Descripcion = familiaProducto.Descripcion,
-                CuentaID = familiaProducto.CuentaID
+                CuentaID = familiaProducto.CuentaID,
+                CuentaIDO = familiaProducto.CuentaIDO
             };
             _context.FamiliaProducto.Add(f);
             await _context.SaveChangesAsync();

@@ -66,7 +66,7 @@ namespace WebApiSistema
 
             // Singletons
             services.AddScoped<IUserService, UserService>();
-            services.AddScoped<ITransaccionInventario, TransaccionInventario>();
+            services.AddScoped<ITransaccionInventario, CTransaccionInventario>();
             services.AddSingleton<IDirectDB, DirectDB>();
             services.AddSwaggerGen(c =>
             {

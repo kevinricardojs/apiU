@@ -1,11 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿
+using WebApiSistema.Models.Venta;
 
 namespace WebApiSistema.DTO
 {
     public class ResponseDTO
     {
+        public bool Success { get; set; }
+        public string Mensaje { get; set; } = "";
+        public string Error { get; set; } = "";
+
+        public Venta Venta { get; set; }
     }
 }

@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace WebApiSistema.DTO.Compras
+namespace WebApiSistema.DTO.Ventas
 {
-    public class CompraCreateDetail
+    public class VentaCreateDetail
     {
         public int ProductoID { get; set; }
         public int NoLinea { get; set; }

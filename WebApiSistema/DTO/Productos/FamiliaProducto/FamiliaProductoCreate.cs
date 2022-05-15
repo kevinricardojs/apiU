@@ -5,5 +5,6 @@ namespace WebApiSistema.DTO.Productos.FamiliaProducto
     {
         public string Descripcion { get; set; }
         public int CuentaID { get; set; }
+        public int CuentaIDO { get; set; }
     }
 }

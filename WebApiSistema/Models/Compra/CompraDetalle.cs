@@ -13,6 +13,7 @@ namespace WebApiSistema.Models.Compra
         public int ProductoID { get; set; }
         public Producto Producto { get; set; }
         public int NoLinea { get; set; }
+        public Decimal Cantidad { get; set; }
         public Decimal Precio { get; set; }
         public string Descripcion { get; set; }
     }

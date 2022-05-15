@@ -27,14 +27,14 @@ namespace WebApiSistema.Controllers
 
         // GET: api/Compras
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Venta>>> GetCompra()
+        public async Task<ActionResult<IEnumerable<Compra>>> GetCompra()
         {
             return await _context.Compra.ToListAsync();
         }
 
         // GET: api/Compras/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Venta>> GetCompra(int id)
+        public async Task<ActionResult<Compra>> GetCompra(int id)
         {
             var compra = await _context.Compra.FindAsync(id);
 
@@ -49,7 +49,7 @@ namespace WebApiSistema.Controllers
         // PUT: api/Compras/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCompra(int id, Venta compra)
+        public async Task<IActionResult> PutCompra(int id, Compra compra)
         {
             if (id != compra.ID)
             {
@@ -80,7 +80,7 @@ namespace WebApiSistema.Controllers
         // POST: api/Compras
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Venta>> PostCompra(CompraCreate compra)
+        public async Task<ActionResult<Compra>> PostCompra(CompraCreate compra)
         {
             List<CompraDetalle> detalles = new List<CompraDetalle>();
 
@@ -95,7 +95,7 @@ namespace WebApiSistema.Controllers
                 });
             }
 
-            Venta c = new Venta
+            Compra c = new Compra
             {
                 SocioNegocioID = compra.SocioNegocioID,
                 FacturaSerie = compra.FacturaSerie,

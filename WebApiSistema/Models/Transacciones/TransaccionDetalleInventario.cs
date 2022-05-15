@@ -14,6 +14,7 @@ namespace WebApiSistema.Models.Transacciones
         public int SucursalID { get; set; }
         public Sucursal Sucursal { get; set; }
         public int Linea { get; set; }
+        public Decimal Valor { get; set; }
         public Decimal Entrada { get; set; }
         public Decimal Salida { get; set; }
         public DateTime FechaHora { get; set; }

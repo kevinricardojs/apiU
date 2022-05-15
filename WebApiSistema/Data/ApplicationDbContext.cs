@@ -7,6 +7,7 @@ using WebApiSistema.Models.Usuario;
 using WebApiSistema.Models.Compra;
 using WebApiSistema.Models.Productos;
 using WebApiSistema.Models.Transacciones;
+using WebApiSistema.Models.Venta;
 
 namespace WebApiSistema.Data
 {
@@ -26,8 +27,12 @@ namespace WebApiSistema.Data
         public DbSet<Sucursal> Sucursal { get; set; }
 
         // Compras
-        public DbSet<Venta> Compra { get; set; }
+        public DbSet<Compra> Compra { get; set; }
         public DbSet<CompraDetalle> CompraDetalle { get; set; }
+
+        // Ventas
+        public DbSet<Venta> Venta { get; set; }
+        public DbSet<VentaDetalle> VentaDetalle { get; set; }
 
         // Presupuesto
         public DbSet<Cuenta> Cuenta { get; set; }
@@ -82,6 +87,6 @@ namespace WebApiSistema.Data
         }
 
 
-        public DbSet<WebApiSistema.Models.Configuraciones.SocioNegocio> SocioNegocio { get; set; }
+        public DbSet<SocioNegocio> SocioNegocio { get; set; }
     }
 }
