@@ -82,31 +82,19 @@ namespace WebApiSistema.Controllers
         [HttpPost]
         public async Task<ActionResult<Compra>> PostCompra(CompraCreate compra)
         {
-            List<CompraDetalle> detalles = new List<CompraDetalle>();
+            var response = await _trInventario.Ingreso(compra);
 
-            foreach(var detalle in compra.Detalles)
-            {
-                detalles.Add(new CompraDetalle
-                {
-                    NoLinea = detalle.NoLinea,
-                    ProductoID = detalle.ProductoID,
-                    Precio = detalle.Precio,
-                    Descripcion = detalle.Descripcion
-                });
-            }
-
-            Compra c = new Compra
-            {
-                SocioNegocioID = compra.SocioNegocioID,
-                FacturaSerie = compra.FacturaSerie,
-                FacturaFecha = compra.FacturaFecha,
-                Detalles = detalles
-            };
-            var respose = await _trInventario.Ingreso(compra);
-            //_context.Compra.Add(c);
+            //_context.Venta.Add(v);
             //await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetCompra", new { id = c.ID }, c);
+            if (response.Success)
+            {
+                return CreatedAtAction("GetVenta", new { id = response.Compra.ID }, response.Compra);
+            }
+            else
+            {
+                return BadRequest(response);
+            }
         }
 
         // DELETE: api/Compras/5

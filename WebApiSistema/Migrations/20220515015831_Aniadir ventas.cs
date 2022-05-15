@@ -4,10 +4,24 @@ using MySql.EntityFrameworkCore.Metadata;
 
 namespace WebApiSistema.Migrations
 {
-    public partial class Añadeentidadesventa : Migration
+    public partial class Aniadirventas : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AddColumn<decimal>(
+                name: "Valor",
+                table: "TransaccionDetalleInventario",
+                type: "decimal(18, 2)",
+                nullable: false,
+                defaultValue: 0m);
+
+            migrationBuilder.AddColumn<int>(
+                name: "CuentaIDO",
+                table: "FamiliaProducto",
+                type: "int",
+                nullable: false,
+                defaultValue: 0);
+
             migrationBuilder.AddColumn<decimal>(
                 name: "Cantidad",
                 table: "CompraDetalle",
@@ -43,7 +57,7 @@ namespace WebApiSistema.Migrations
                 {
                     ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    CompraID = table.Column<int>(type: "int", nullable: false),
+                    VentaID = table.Column<int>(type: "int", nullable: false),
                     ProductoID = table.Column<int>(type: "int", nullable: false),
                     NoLinea = table.Column<int>(type: "int", nullable: false),
                     Cantidad = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
@@ -60,8 +74,8 @@ namespace WebApiSistema.Migrations
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_VentaDetalle_Venta_CompraID",
-                        column: x => x.CompraID,
+                        name: "FK_VentaDetalle_Venta_VentaID",
+                        column: x => x.VentaID,
                         principalTable: "Venta",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
@@ -73,14 +87,14 @@ namespace WebApiSistema.Migrations
                 column: "SocioNegocioID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_VentaDetalle_CompraID",
-                table: "VentaDetalle",
-                column: "CompraID");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_VentaDetalle_ProductoID",
                 table: "VentaDetalle",
                 column: "ProductoID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_VentaDetalle_VentaID",
+                table: "VentaDetalle",
+                column: "VentaID");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -90,6 +104,14 @@ namespace WebApiSistema.Migrations
 
             migrationBuilder.DropTable(
                 name: "Venta");
+
+            migrationBuilder.DropColumn(
+                name: "Valor",
+                table: "TransaccionDetalleInventario");
+
+            migrationBuilder.DropColumn(
+                name: "CuentaIDO",
+                table: "FamiliaProducto");
 
             migrationBuilder.DropColumn(
                 name: "Cantidad",

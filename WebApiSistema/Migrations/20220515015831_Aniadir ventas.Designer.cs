@@ -9,8 +9,8 @@ using WebApiSistema.Data;
 namespace WebApiSistema.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220514214507_cuenta de salida")]
-    partial class cuentadesalida
+    [Migration("20220515015831_Aniadir ventas")]
+    partial class Aniadirventas
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -434,6 +434,9 @@ namespace WebApiSistema.Migrations
                     b.Property<int?>("TransaccionInventarioID")
                         .HasColumnType("int");
 
+                    b.Property<decimal>("Valor")
+                        .HasColumnType("decimal(18, 2)");
+
                     b.HasKey("ID");
 
                     b.HasIndex("ProductoID");
@@ -659,9 +662,6 @@ namespace WebApiSistema.Migrations
                     b.Property<decimal>("Cantidad")
                         .HasColumnType("decimal(18, 2)");
 
-                    b.Property<int>("CompraID")
-                        .HasColumnType("int");
-
                     b.Property<string>("Descripcion")
                         .HasColumnType("text");
 
@@ -674,11 +674,14 @@ namespace WebApiSistema.Migrations
                     b.Property<int>("ProductoID")
                         .HasColumnType("int");
 
+                    b.Property<int>("VentaID")
+                        .HasColumnType("int");
+
                     b.HasKey("ID");
 
-                    b.HasIndex("CompraID");
-
                     b.HasIndex("ProductoID");
+
+                    b.HasIndex("VentaID");
 
                     b.ToTable("VentaDetalle");
                 });
@@ -925,21 +928,21 @@ namespace WebApiSistema.Migrations
 
             modelBuilder.Entity("WebApiSistema.Models.Venta.VentaDetalle", b =>
                 {
-                    b.HasOne("WebApiSistema.Models.Venta.Venta", "Compra")
-                        .WithMany("Detalles")
-                        .HasForeignKey("CompraID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("WebApiSistema.Models.Productos.Producto", "Producto")
                         .WithMany()
                         .HasForeignKey("ProductoID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Compra");
+                    b.HasOne("WebApiSistema.Models.Venta.Venta", "Venta")
+                        .WithMany("Detalles")
+                        .HasForeignKey("VentaID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Producto");
+
+                    b.Navigation("Venta");
                 });
 
             modelBuilder.Entity("WebApiSistema.Models.Compra.Compra", b =>

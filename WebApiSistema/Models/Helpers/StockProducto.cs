@@ -8,5 +8,6 @@ namespace WebApiSistema.Models.Helpers
         public Decimal Total { get; set; } = -1;
         public int CuentaID { get; set; }
         public int CuentaIDO { get; set; }
+        public Decimal PrecioPromedio { get; set; }
     }
 }
