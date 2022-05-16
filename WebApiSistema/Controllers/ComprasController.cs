@@ -89,7 +89,7 @@ namespace WebApiSistema.Controllers
 
             if (response.Success)
             {
-                return CreatedAtAction("GetVenta", new { id = response.Compra.ID }, response.Compra);
+                return CreatedAtAction("GetCompra", new { id = response.Compra.ID }, response.Compra);
             }
             else
             {

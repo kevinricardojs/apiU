@@ -1,11 +1,10 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
+using WebApiSistema.Models.Productos;
 
-namespace WebApiSistema.Models.Venta
+namespace WebApiSistema.DTO.Ventas
 {
-    public class VentaDetalle
+    public class VentaCreateResponseDetail
     {
-        [Key]
         public int ID { get; set; }
         public int ProductoID { get; set; }
         public int NoLinea { get; set; }

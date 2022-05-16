@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using AutoMapper;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,10 +20,12 @@ namespace WebApiSistema.Services.Transacciones
     {
         private readonly ApplicationDbContext _context;
         private readonly IDirectDB _directDB;
-        public CTransaccionInventario(ApplicationDbContext context, IDirectDB directDB)
+        private readonly IMapper _mapper;
+        public CTransaccionInventario(ApplicationDbContext context, IDirectDB directDB, IMapper mapper)
         {
             _context = context;
             _directDB = directDB;
+            _mapper = mapper;
         }
         public async Task<ResponseVentaDTO> Egreso(VentaCreate venta)
         {
@@ -139,31 +142,11 @@ namespace WebApiSistema.Services.Transacciones
                     Linea = tcCobro.Detalles.Count,
                     SucursalID = venta.SucursalID
                 });
-                // Crea Linea de iva sobre de venta
 
+                // Mapear venta generica a venta para BD
+                Venta v = _mapper.Map<Venta>(venta);
+                v.FechaHora = tr.FechaHora;
 
-
-                List<VentaDetalle> detalles = new List<VentaDetalle>();
-
-                foreach (var detalle in venta.Detalles)
-                {
-                    detalles.Add(new VentaDetalle
-                    {
-                        NoLinea = detalle.NoLinea,
-                        ProductoID = detalle.ProductoID,
-                        Precio = detalle.Precio,
-                        Descripcion = detalle.Descripcion,
-                        Cantidad = detalle.Cantidad
-                    });
-                }
-
-                Venta v = new Venta
-                {
-                    SocioNegocioID = venta.SocioNegocioID,
-                    FacturaSerie = venta.FacturaSerie,
-                    FacturaFecha = venta.FacturaFecha,
-                    Detalles = detalles
-                };
                 _context.Venta.Add(v);
                 await _context.SaveChangesAsync();
                 // Guardando la transaccion de la venta
@@ -179,11 +162,11 @@ namespace WebApiSistema.Services.Transacciones
                 _context.TransaccionContable.Add(tcCobro);
                 await _context.SaveChangesAsync();
 
-
+                var ventaCreada = _mapper.Map<VentaCreateResponse>(v);
                 ResponseVentaDTO response = new ResponseVentaDTO
                 {
                     Success = true,
-                    Venta = v
+                    Venta = ventaCreada
                 };
                 transaction.Commit();
                 return response;
@@ -284,27 +267,10 @@ namespace WebApiSistema.Services.Transacciones
 
                 /* Fin Costo de compra*/
 
-                List<CompraDetalle> detalles = new List<CompraDetalle>();
+                // Mapear compra generica a compra para BD
+                Compra c = _mapper.Map<Compra>(compra);
+                c.FechaHora = tr.FechaHora;
 
-                foreach (var detalle in compra.Detalles)
-                {
-                    detalles.Add(new CompraDetalle
-                    {
-                        NoLinea = detalle.NoLinea,
-                        ProductoID = detalle.ProductoID,
-                        Precio = detalle.Precio,
-                        Descripcion = detalle.Descripcion,
-                        Cantidad = detalle.Cantidad
-                    });
-                }
-
-                Compra c = new Compra
-                {
-                    SocioNegocioID = compra.SocioNegocioID,
-                    FacturaSerie = compra.FacturaSerie,
-                    FacturaFecha = compra.FacturaFecha,
-                    Detalles = detalles
-                };
                 _context.Compra.Add(c);
                 await _context.SaveChangesAsync();
                 // Guardando la transaccion de la venta
@@ -316,13 +282,14 @@ namespace WebApiSistema.Services.Transacciones
                 _context.TransaccionContable.Add(tc);
                 await _context.SaveChangesAsync();
 
-
+                transaction.Commit();
+                var compraCreada = _mapper.Map<CompraCreateResponse>(c);
                 ResponseCompraDTO response = new ResponseCompraDTO
                 {
                     Success = true,
-                    Compra = c
+                    Compra = compraCreada
                 };
-                transaction.Commit();
+
                 return response;
             }
             catch (Exception e)

@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -15,8 +16,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using WebApiSistema.Data;
+using WebApiSistema.Mapper;
 using WebApiSistema.Models.Usuario;
 using WebApiSistema.Services;
 using WebApiSistema.Services.Transacciones;
@@ -63,7 +66,19 @@ namespace WebApiSistema
                 });
             services.AddControllersWithViews();
             services.AddControllers();
+            //    .AddJsonOptions(x =>
+            //{
+            //    x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+            //    x.JsonSerializerOptions.MaxDepth = 0;
+            //});
+            var mapperConfig = new MapperConfiguration(m =>
+            {
+                m.AddProfile(new MyMappingProfile());
+            });
 
+            IMapper mapper = mapperConfig.CreateMapper();
+
+            services.AddSingleton(mapper);
             // Singletons
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ITransaccionInventario, CTransaccionInventario>();

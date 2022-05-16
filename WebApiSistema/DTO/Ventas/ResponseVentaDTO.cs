@@ -4,6 +4,6 @@ namespace WebApiSistema.DTO.Ventas
 {
     public class ResponseVentaDTO : ResponseDTO
     {
-        public Venta Venta { get; set; }
+        public VentaCreateResponse Venta { get; set; }
     }
 }
