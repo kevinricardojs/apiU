@@ -8,6 +8,7 @@ using WebApiSistema.Models.Compra;
 using WebApiSistema.Models.Productos;
 using WebApiSistema.Models.Transacciones;
 using WebApiSistema.Models.Venta;
+using WebApiSistema.Models.ListaMateriales;
 
 namespace WebApiSistema.Data
 {
@@ -49,7 +50,9 @@ namespace WebApiSistema.Data
         public DbSet<TransaccionInventario> TransaccionInventario { get; set; }
         public DbSet<TransaccionDetalleInventario> TransaccionDetalleInventario { get; set; }
 
-
+        // Lista Materiales
+        public DbSet<ListaMateriales> ListaMateriales { get; set; }
+        public DbSet<Materiales> Materiales { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
