@@ -3,7 +3,7 @@ using WebApiSistema.DTO.Compras;
 using WebApiSistema.DTO.ListaMateriales;
 using WebApiSistema.DTO.Ventas;
 using WebApiSistema.Models.Compra;
-using WebApiSistema.Models.ListaMateriales;
+using WebApiSistema.Models.Produccion;
 using WebApiSistema.Models.Venta;
 
 namespace WebApiSistema.Mapper

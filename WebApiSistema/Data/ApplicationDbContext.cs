@@ -8,7 +8,7 @@ using WebApiSistema.Models.Compra;
 using WebApiSistema.Models.Productos;
 using WebApiSistema.Models.Transacciones;
 using WebApiSistema.Models.Venta;
-using WebApiSistema.Models.ListaMateriales;
+using WebApiSistema.Models.Produccion;
 
 namespace WebApiSistema.Data
 {
@@ -53,6 +53,11 @@ namespace WebApiSistema.Data
         // Lista Materiales
         public DbSet<ListaMateriales> ListaMateriales { get; set; }
         public DbSet<Materiales> Materiales { get; set; }
+
+        // Produccion
+        public DbSet<Produccion> Produccion { get; set; }
+        public DbSet<ProduccionDetalles> ProduccionDetalles { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);

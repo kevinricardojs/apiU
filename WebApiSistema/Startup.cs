@@ -12,6 +12,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -65,7 +66,10 @@ namespace WebApiSistema
                     };
                 });
             services.AddControllersWithViews();
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson(o =>
+            {
+                o.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+            });
             //    .AddJsonOptions(x =>
             //{
             //    x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
@@ -83,6 +87,7 @@ namespace WebApiSistema
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ITransaccionInventario, CTransaccionInventario>();
             services.AddSingleton<IDirectDB, DirectDB>();
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebApiSistema", Version = "v1" });

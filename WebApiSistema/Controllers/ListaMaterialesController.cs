@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebApiSistema.Data;
 using WebApiSistema.DTO.ListaMateriales;
-using WebApiSistema.Models.ListaMateriales;
+using WebApiSistema.Models.Produccion;
 
 namespace WebApiSistema.Controllers
 {
