@@ -2,23 +2,30 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebApiSistema.Data;
+using WebApiSistema.DTO.Produccion;
 using WebApiSistema.Models.Produccion;
+using WebApiSistema.Services.Transacciones;
 
 namespace WebApiSistema.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class ProduccionsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly IMapper _mapper;
+        private readonly ITransaccionInventario _trInventario;
 
-        public ProduccionsController(ApplicationDbContext context)
+        public ProduccionsController(ApplicationDbContext context, IMapper mapper, ITransaccionInventario trInventario)
         {
             _context = context;
+            _mapper = mapper;
+            _trInventario = trInventario;
         }
 
         // GET: api/Produccions
@@ -76,12 +83,21 @@ namespace WebApiSistema.Controllers
         // POST: api/Produccions
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Produccion>> PostProduccion(Produccion produccion)
+        public async Task<ActionResult<ProduccionCreateResponse>> PostProduccion(ProduccionCreate produccion)
         {
-            _context.Produccion.Add(produccion);
-            await _context.SaveChangesAsync();
+            var response = await _trInventario.Producir(produccion);
 
-            return CreatedAtAction("GetProduccion", new { id = produccion.ID }, produccion);
+            //_context.Venta.Add(v);
+            //await _context.SaveChangesAsync();
+
+            if (response.Success)
+            {
+                return CreatedAtAction("GetProduccion", new { id = response.Produccion.ID }, response.Produccion);
+            }
+            else
+            {
+                return BadRequest(response);
+            }
         }
 
         // DELETE: api/Produccions/5

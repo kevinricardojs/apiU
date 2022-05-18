@@ -66,15 +66,7 @@ namespace WebApiSistema
                     };
                 });
             services.AddControllersWithViews();
-            services.AddControllers().AddNewtonsoftJson(o =>
-            {
-                o.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
-            });
-            //    .AddJsonOptions(x =>
-            //{
-            //    x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
-            //    x.JsonSerializerOptions.MaxDepth = 0;
-            //});
+            services.AddControllers();
             var mapperConfig = new MapperConfiguration(m =>
             {
                 m.AddProfile(new MyMappingProfile());

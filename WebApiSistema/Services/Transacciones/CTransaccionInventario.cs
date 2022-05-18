@@ -7,10 +7,12 @@ using System.Threading.Tasks;
 using WebApiSistema.Data;
 using WebApiSistema.DTO;
 using WebApiSistema.DTO.Compras;
+using WebApiSistema.DTO.Produccion;
 using WebApiSistema.DTO.Ventas;
 using WebApiSistema.Models.Compra;
 using WebApiSistema.Models.Helpers;
 using WebApiSistema.Models.Presupuesto;
+using WebApiSistema.Models.Produccion;
 using WebApiSistema.Models.Transacciones;
 using WebApiSistema.Models.Venta;
 
@@ -365,6 +367,131 @@ namespace WebApiSistema.Services.Transacciones
                 cuenta = JsonConvert.DeserializeObject<Cuenta>(json);
             }
             return cuenta;
+        }
+
+        public async Task<ResponseProduccionDTO> Producir(ProduccionCreate produccion)
+        {
+            try
+            {
+                using var transaction = _context.Database.BeginTransaction();
+                TransaccionInventario tr = new();
+                TransaccionContable tc = new();
+
+                tr.FechaHora = DateTime.Now;
+                tr.Tipo = 1;
+                tr.Detalles = new List<TransaccionDetalleInventario>();
+
+                tc.FechaHora = tr.FechaHora;
+                tc.Tipo = 0;
+                tc.Detalles = new List<TransaccionDetalleContable>();
+
+                StockProducto productoCrear = await buscarStock(produccion.ListaMaterialesID + 10000);
+
+                foreach (var detalleProduccion in produccion.Detalles)
+                {
+                    StockProducto stock = await buscarStock(detalleProduccion.ProductoID);
+                    if (stock.ProductoID == detalleProduccion.ProductoID && stock.Total >= detalleProduccion.Cantidad)
+                    {
+                        // Detalle de inventario
+                        decimal valorTransaccion = stock.PrecioPromedio * detalleProduccion.Cantidad;
+                        tr.Detalles.Add(new TransaccionDetalleInventario
+                        {
+
+                            Salida = detalleProduccion.Cantidad,
+                            Entrada = 0,
+                            Linea = detalleProduccion.NoLinea,
+                            ProductoID = detalleProduccion.ProductoID,
+                            SucursalID = produccion.SucursalID,
+                            FechaHora = tr.FechaHora,
+                            Valor = valorTransaccion
+                        });
+
+
+                        // Cuenta Inventario PT
+                        tc.Detalles.Add(new TransaccionDetalleContable
+                        {
+                            CuentaID = stock.CuentaID,
+                            Debe = 0,
+                            Haber = valorTransaccion,
+                            FechaHora = tc.FechaHora,
+                            Linea = detalleProduccion.NoLinea,
+                            SucursalID = produccion.SucursalID
+                        });
+
+
+                    }
+                    else
+                    {
+                        return new ResponseProduccionDTO
+                        {
+                            Success = false,
+                            Error = $"El Producto con ID {detalleProduccion.ProductoID} no cuenta con suficiente stock"
+                        };
+                    }
+
+                }
+                decimal totalProductos = tc.Detalles.Sum(x => x.Haber);
+
+                /* Total a Producir*/
+                tr.Detalles.Add(new TransaccionDetalleInventario
+                {
+
+                    Salida = 0,
+                    Entrada = produccion.Cantidad,
+                    Linea = tr.Detalles.Count - 1,
+                    ProductoID = productoCrear.ProductoID,
+                    SucursalID = produccion.SucursalID,
+                    FechaHora = tr.FechaHora,
+                    Valor = totalProductos
+                });
+                
+                /* Total Valor en costos*/
+                tc.Detalles.Add(new TransaccionDetalleContable
+                {
+                    CuentaID = productoCrear.CuentaID,
+                    Debe = totalProductos,
+                    Haber = 0,
+                    FechaHora = tc.FechaHora,
+                    Linea = tc.Detalles.Count - 1,
+                    SucursalID = produccion.SucursalID
+                });
+
+                /* Fin calculo costo de venta*/
+
+
+                // Mapear venta generica a venta para BD
+                Produccion p = _mapper.Map<Produccion>(produccion);
+                p.Creado = tr.FechaHora;
+
+                _context.Produccion.Add(p);
+                await _context.SaveChangesAsync();
+                // Guardando la transaccion de la produccion
+                tr.CompraVentaID = p.ID;
+                _context.TransaccionInventario.Add(tr);
+                await _context.SaveChangesAsync();
+
+                tc.CompraVentaID = p.ID;
+                _context.TransaccionContable.Add(tc);
+                await _context.SaveChangesAsync();
+
+                var produccionFinalizada = _mapper.Map<ProduccionCreateResponse>(p);
+                ResponseProduccionDTO response = new ResponseProduccionDTO
+                {
+                    Success = true,
+                    Produccion = produccionFinalizada
+                };
+                transaction.Commit();
+                return response;
+            }
+            catch (Exception e)
+            {
+                return new ResponseProduccionDTO
+                {
+                    Success = false,
+                    Error = $"Ha ocurrido un error Error:{e.Message}"
+                };
+            }
+
         }
     }
 }

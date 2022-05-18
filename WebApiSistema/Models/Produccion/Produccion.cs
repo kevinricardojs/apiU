@@ -10,7 +10,7 @@ namespace WebApiSistema.Models.Produccion
         public int ID { get; set; }
         public int ListaMaterialesID { get; set; }
         public ListaMateriales ListaMateriales { get; set; }
-        public DateTime Creado { get; set; }
+        public DateTime Creado { get; set; } = DateTime.Now;
         public decimal Cantidad { get; set; }
         public ICollection<ProduccionDetalles> Detalles { get; set; }
     }

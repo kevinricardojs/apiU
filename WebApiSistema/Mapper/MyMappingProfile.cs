@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using WebApiSistema.DTO.Compras;
 using WebApiSistema.DTO.ListaMateriales;
+using WebApiSistema.DTO.Produccion;
 using WebApiSistema.DTO.Ventas;
 using WebApiSistema.Models.Compra;
 using WebApiSistema.Models.Produccion;
@@ -32,10 +33,16 @@ namespace WebApiSistema.Mapper
             CreateMap<ListaMaterialesCreate, ListaMateriales>();
             CreateMap<ListaMaterialesDetailCreate, Materiales>();
 
-            // Devolver Venta
+            // Devolver Materiales response
             CreateMap<ListaMateriales, ListaMaterialesResponse>();
             CreateMap<Materiales, ListaMaterialesDetailResponse>();
 
+            // Devolver Produccion
+            CreateMap<ProduccionCreate, Produccion>();
+            CreateMap<ProduccionDetalleCreate, ProduccionDetalles>();
+
+            CreateMap<Produccion, ProduccionCreateResponse>();
+            CreateMap<ProduccionDetalles, ProduccionDetalleResponse>();
         }
     }
 }

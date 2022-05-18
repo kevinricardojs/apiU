@@ -11,7 +11,7 @@ namespace WebApiSistema.Models.Compra
         public int ID { get; set; }
         public int SocioNegocioID { get; set; }
         public SocioNegocio SocioNegocio { get; set; }
-        public DateTime FechaHora { get; set; }
+        public DateTime FechaHora { get; set; } = DateTime.Now;
         public string FacturaSerie { get; set; }
         public DateTime FacturaFecha { get; set; }
         public ICollection<CompraDetalle> Detalles { get; set; }
