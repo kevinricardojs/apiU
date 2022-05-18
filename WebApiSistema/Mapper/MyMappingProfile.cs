@@ -2,9 +2,11 @@
 using WebApiSistema.DTO.Compras;
 using WebApiSistema.DTO.ListaMateriales;
 using WebApiSistema.DTO.Produccion;
+using WebApiSistema.DTO.Transaccion;
 using WebApiSistema.DTO.Ventas;
 using WebApiSistema.Models.Compra;
 using WebApiSistema.Models.Produccion;
+using WebApiSistema.Models.Transacciones;
 using WebApiSistema.Models.Venta;
 
 namespace WebApiSistema.Mapper
@@ -43,6 +45,14 @@ namespace WebApiSistema.Mapper
 
             CreateMap<Produccion, ProduccionCreateResponse>();
             CreateMap<ProduccionDetalles, ProduccionDetalleResponse>();
+
+            // Transaccion contable
+            CreateMap<TransaccionContableCreate, TransaccionContable>();
+            CreateMap<TransaccionDetalleContableCreate, TransaccionDetalleContable>();
+
+            CreateMap<TransaccionContable, TransaccionContableResponse>();
+            CreateMap<TransaccionDetalleContable, TransaccionDetalleContableResponse>();
+
         }
     }
 }

@@ -8,9 +8,10 @@ namespace WebApiSistema.Models.Transacciones
     {
         [Key]
         public int ID { get; set; }
-        public DateTime FechaHora { get; set; }
+        public DateTime FechaHora { get; set; } = DateTime.Now;
         public int Tipo { get; set; }
         public int CompraVentaID { get; set; }
+        public string Descripcion { get; set; }
         public ICollection<TransaccionDetalleContable> Detalles { get; set; }
     }
 }
