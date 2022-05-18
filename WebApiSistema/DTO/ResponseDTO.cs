@@ -7,6 +7,7 @@ namespace WebApiSistema.DTO
     {
         public bool Success { get; set; }
         public string Mensaje { get; set; } = "";
+        public int Linea { get; set; }
         public string Error { get; set; } = "";
     }
 }

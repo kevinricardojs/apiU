@@ -100,7 +100,8 @@ namespace WebApiSistema.Services.Transacciones
                         return new ResponseVentaDTO
                         {
                             Success = false,
-                            Error = $"El Producto con ID {ventaLinea.ProductoID} no cuenta con suficiente stock"
+                            Linea = ventaLinea.NoLinea,
+                            Error = $"El Producto No Linea {ventaLinea.NoLinea} ID {stock.ProductoID} - {stock.Descripcion} no cuenta con suficiente stock"
                         };
                     }
 
@@ -236,7 +237,8 @@ namespace WebApiSistema.Services.Transacciones
                         return new ResponseCompraDTO
                         {
                             Success = false,
-                            Error = $"El Producto con ID {compraLinea.ProductoID} no cuenta con suficiente stock"
+                            Linea = compraLinea.NoLinea,
+                            Error = $"El Producto No Linea {compraLinea.NoLinea} ID {stock.ProductoID} - {stock.Descripcion} no cuenta con suficiente stock"
                         };
                     }
 
@@ -425,7 +427,8 @@ namespace WebApiSistema.Services.Transacciones
                         return new ResponseProduccionDTO
                         {
                             Success = false,
-                            Error = $"El Producto con ID {detalleProduccion.ProductoID} no cuenta con suficiente stock"
+                            Linea = detalleProduccion.NoLinea,
+                            Error = $"El Producto No Linea {detalleProduccion.NoLinea} ID {stock.ProductoID} - {stock.Descripcion} no cuenta con suficiente stock"
                         };
                     }
 

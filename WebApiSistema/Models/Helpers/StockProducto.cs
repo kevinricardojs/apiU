@@ -9,5 +9,6 @@ namespace WebApiSistema.Models.Helpers
         public int CuentaID { get; set; }
         public int CuentaIDO { get; set; }
         public Decimal PrecioPromedio { get; set; }
+        public string Descripcion { get; set; }
     }
 }
