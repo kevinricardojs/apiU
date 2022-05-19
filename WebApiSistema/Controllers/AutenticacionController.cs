@@ -6,10 +6,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using WebApiSistema.Services;
+using WebApiSistema.DTO.User;
 
 namespace WebApiSistema.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class AutenticacionController : ControllerBase
     {
@@ -21,10 +22,27 @@ namespace WebApiSistema.Controllers
 
         [HttpPost]
         [Route("Login")]
-        public async Task<IActionResult> Login(string email, string password)
+        public async Task<IActionResult> Login([FromBody] LoginDTO loginInfo)
         {
-            var result = await _userService.GetUserByEmail(email);
-            return Ok(result);
+            var result = await _userService.VerifyUserCredentiasls(loginInfo);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+
+            return BadRequest(result);
+        }
+        [HttpPost]
+        [Route("CreateUser")]
+        public async Task<IActionResult> CreateUser([FromBody] UserCreate user)
+        {
+            var result = await _userService.CreateUser(user);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+
+            return BadRequest(result);
         }
     }
 }

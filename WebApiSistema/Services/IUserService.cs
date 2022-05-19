@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
+using WebApiSistema.DTO.User;
 using WebApiSistema.Models.Usuario;
 
 namespace WebApiSistema.Services
@@ -13,5 +13,7 @@ namespace WebApiSistema.Services
         public Task<User> CreateUser(User User, String Password);
         public Task<User> GetUserRoles(User user);
         public Task<User> AddUserRoles(User user, IEnumerable<string> rolesForAdd, IEnumerable<string> rolesForExclude);
+        public Task<ResponseUserDTO> VerifyUserCredentiasls(LoginDTO loginInfo);
+        public Task<ResponseUserDTO> CreateUser(UserCreate user);
     }
 }

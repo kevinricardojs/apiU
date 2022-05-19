@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Identity;
 using System.Transactions;
 using WebApiSistema.Data;
 using WebApiSistema.Models.Usuario;
+using WebApiSistema.DTO.User;
+using AutoMapper;
 
 namespace WebApiSistema.Services
 {
@@ -15,25 +17,63 @@ namespace WebApiSistema.Services
         private readonly UserManager<User> _userManager;
 
         private readonly ApplicationDbContext _context;
-        public UserService(UserManager<User> userManager, ApplicationDbContext context)
+        private readonly IMapper _mapper;
+
+        public UserService(UserManager<User> userManager, ApplicationDbContext context, IMapper mapper)
         {
             _userManager = userManager;
             _context = context;
+            _mapper = mapper;
         }
 
+        public async Task<ResponseUserDTO> VerifyUserCredentiasls(LoginDTO loginInfo)
+        {
+            var user = await GetUserByEmail(loginInfo.email);
+            var result = await _userManager.CheckPasswordAsync(user, loginInfo.password);
+            if (result)
+            {
+                
+                var usuario= _mapper.Map<UserCreateReponse>(user);
+                return new ResponseUserDTO
+                {
+                    Success = true,
+                    Mensaje = "Inicio de sesión correcto",
+                    user = usuario
+                };
+            }
+            return new ResponseUserDTO
+            {
+                Success = false,
+                Error = "Usuario o password incorrecto, verifique su información"
+            };
+        }
+
+        public async Task<ResponseUserDTO> CreateUser(UserCreate user)
+        {
+            User u = _mapper.Map<User>(user);
+            var result = await _userManager.CreateAsync(u, user.Password);
+
+            if (result.Succeeded)
+            {
+                var usuarioCreado = _mapper.Map<UserCreateReponse>(u);
+                return new ResponseUserDTO
+                {
+                    Success = true,
+                    Mensaje = "Usuario Creado Correctamente",
+                    user = usuarioCreado
+                };
+            }
+
+            List<IdentityError> errorList = result.Errors.ToList();
+            var errors = string.Join(", ", errorList.Select(e => e.Description));
+            return new ResponseUserDTO {
+                Success = false,
+                Error = errors
+            };
+        }
         public async Task<User> GetUserByEmail(string email)
         {
-            var userFrom = await _context.Users.AsNoTracking()
-            .Select(user => new User
-            {
-                Id = user.Id,
-                UserName = user.UserName,
-                Nombres = user.Nombres,
-                Apellidos = user.Apellidos,
-                SecurityStamp = user.SecurityStamp,
-                PasswordHash = user.PasswordHash,
-                Status = user.Status
-            })
+            var userFrom = await _context.Users
             .FirstOrDefaultAsync(user => user.Email == email);
 
             return userFrom;
