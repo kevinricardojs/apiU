@@ -9,6 +9,11 @@ using WebApiSistema.Data;
 using WebApiSistema.Models.Usuario;
 using WebApiSistema.DTO.User;
 using AutoMapper;
+using System.Security.Claims;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.Extensions.Configuration;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace WebApiSistema.Services
 {
@@ -18,12 +23,13 @@ namespace WebApiSistema.Services
 
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
-
-        public UserService(UserManager<User> userManager, ApplicationDbContext context, IMapper mapper)
+        private readonly string _tokenEncryptor;
+        public UserService(UserManager<User> userManager, ApplicationDbContext context, IMapper mapper, IConfiguration config)
         {
             _userManager = userManager;
             _context = context;
             _mapper = mapper;
+            _tokenEncryptor = config["ConnectionStrings:MySqlConnection"];
         }
 
         public async Task<ResponseUserDTO> VerifyUserCredentiasls(LoginDTO loginInfo)
@@ -32,13 +38,14 @@ namespace WebApiSistema.Services
             var result = await _userManager.CheckPasswordAsync(user, loginInfo.password);
             if (result)
             {
-                
+                string token = GenerateJwtToken(user);
                 var usuario= _mapper.Map<UserCreateReponse>(user);
                 return new ResponseUserDTO
                 {
                     Success = true,
                     Mensaje = "Inicio de sesión correcto",
-                    user = usuario
+                    user = usuario,
+                    Token = token
                 };
             }
             return new ResponseUserDTO
@@ -82,18 +89,7 @@ namespace WebApiSistema.Services
         public async Task<IEnumerable<User>> GetUsers()
         {
             //var roles = _userManager.GetRolesAsync()
-            var users = await _userManager.Users.AsNoTracking()
-            .Select(user => new User
-            {
-                Id = user.Id,
-                UserName = user.UserName,
-                Nombres = user.Nombres,
-                Apellidos = user.Apellidos
-                ,
-                SecurityStamp = user.SecurityStamp
-                ,
-                Status = user.Status
-            }).ToListAsync();
+            var users = await _userManager.Users.AsNoTracking().ToListAsync();
 
             return users;
         }
@@ -159,6 +155,33 @@ namespace WebApiSistema.Services
             var result = await _userManager.ResetPasswordAsync(user, token, newPassword);
 
             return user;
+        }
+
+        private string GenerateJwtToken(User user)
+        {
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim("SucursalID", user.Sucursal.ToString())
+            };
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_tokenEncryptor));
+
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(claims),
+                Expires = DateTime.UtcNow.AddSeconds(30),
+                SigningCredentials = creds
+            };
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+
+            return tokenHandler.WriteToken(token);
         }
     }
 }
