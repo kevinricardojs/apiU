@@ -13,7 +13,7 @@ namespace WebApiSistema.Controllers.Productos
 {
     [Route("productos/[controller]")]
     [ApiController]
-    public class ProductoTiposController : ControllerBase
+    public class ProductoTiposController : MainController
     {
         private readonly ApplicationDbContext _context;
 
@@ -52,7 +52,6 @@ namespace WebApiSistema.Controllers.Productos
             {
                 ID = id,
                 Descripcion = productoTipo.Descripcion,
-                SucursalID = productoTipo.SucursalID
             };
 
             _context.Entry(p).State = EntityState.Modified;
@@ -81,11 +80,12 @@ namespace WebApiSistema.Controllers.Productos
         [HttpPost]
         public async Task<ActionResult<ProductoTipo>> PostProductoTipo(ProductoTipoCreate productoTipo)
         {
+            
             ProductoTipo p = new ProductoTipo
             {
-                Descripcion = productoTipo.Descripcion,
-                SucursalID = productoTipo.SucursalID
+                Descripcion = productoTipo.Descripcion
             };
+            p.SucursalID = GetSucursal();
             _context.ProductoTipo.Add(p);
             await _context.SaveChangesAsync();
 

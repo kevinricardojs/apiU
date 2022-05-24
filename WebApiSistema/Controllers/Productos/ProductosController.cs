@@ -13,7 +13,7 @@ namespace WebApiSistema.Controllers.Productos
 {
     [Route("productos/[controller]")]
     [ApiController]
-    public class ProductosController : ControllerBase
+    public class ProductosController : MainController
     {
         private readonly ApplicationDbContext _context;
 
@@ -84,6 +84,7 @@ namespace WebApiSistema.Controllers.Productos
         [HttpPost]
         public async Task<ActionResult<Producto>> PostProducto(ProductoCreate producto)
         {
+            producto.SucursalID = GetSucursal();
             Producto p = new Producto
             {
                 Descripcion = producto.Descripcion,

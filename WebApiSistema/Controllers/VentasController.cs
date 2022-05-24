@@ -14,7 +14,7 @@ namespace WebApiSistema.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class VentasController : ControllerBase
+    public class VentasController : MainController
     {
         private readonly ApplicationDbContext _context;
         private readonly ITransaccionInventario _trInventario;
@@ -82,6 +82,7 @@ namespace WebApiSistema.Controllers
         [HttpPost]
         public async Task<ActionResult<Venta>> PostVenta(VentaCreate venta)
         {
+            venta.SucursalID = GetSucursal();
             var response = await _trInventario.Egreso(venta);
 
             //_context.Venta.Add(v);

@@ -13,7 +13,7 @@ namespace WebApiSistema.Controllers.Configuraciones
 {
     [Route("configuraciones/[controller]")]
     [ApiController]
-    public class EmpresasController : ControllerBase
+    public class EmpresasController : MainController
     {
         private readonly ApplicationDbContext _context;
 

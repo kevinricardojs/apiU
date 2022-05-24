@@ -15,5 +15,8 @@ namespace WebApiSistema.Models.Presupuesto
         public Decimal Presupuesto { get; set; }
         public int Mes { get; set; }
         public int Anio { get; set; }
+
+        public int PresupuestoID { get; set; }
+        public Presupuesto PresupuestoT { get; set; }
     }
 }

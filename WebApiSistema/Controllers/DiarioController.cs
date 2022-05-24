@@ -14,7 +14,7 @@ namespace WebApiSistema.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class DiarioController : ControllerBase
+    public class DiarioController : MainController
     {
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
@@ -80,6 +80,11 @@ namespace WebApiSistema.Controllers
         [HttpPost]
         public async Task<ActionResult<TransaccionContable>> PostTransaccionContable(TransaccionContableCreate transaccionContable)
         {
+            transaccionContable.SucursalID = GetSucursal();
+            foreach (var tr in transaccionContable.Detalles)
+            {
+                tr.SucursalID = transaccionContable.SucursalID;
+            };
             var t = _mapper.Map<TransaccionContable>(transaccionContable);
             _context.TransaccionContable.Add(t);
             await _context.SaveChangesAsync();

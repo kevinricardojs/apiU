@@ -29,7 +29,7 @@ namespace WebApiSistema.Services
             _userManager = userManager;
             _context = context;
             _mapper = mapper;
-            _tokenEncryptor = config["ConnectionStrings:MySqlConnection"];
+            _tokenEncryptor = config.GetSection("AppSettings:Token").Value;
         }
 
         public async Task<ResponseUserDTO> VerifyUserCredentiasls(LoginDTO loginInfo)
@@ -38,7 +38,7 @@ namespace WebApiSistema.Services
             var result = await _userManager.CheckPasswordAsync(user, loginInfo.password);
             if (result)
             {
-                string token = GenerateJwtToken(user);
+                string token = GenerateJwtToken(user, loginInfo.SucursalID);
                 var usuario= _mapper.Map<UserCreateReponse>(user);
                 return new ResponseUserDTO
                 {
@@ -157,13 +157,13 @@ namespace WebApiSistema.Services
             return user;
         }
 
-        private string GenerateJwtToken(User user)
+        private string GenerateJwtToken(User user, int SucursalID)
         {
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.UserName),
-                new Claim("SucursalID", user.Sucursal.ToString())
+                new Claim("SucursalID", SucursalID.ToString())
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_tokenEncryptor));
@@ -173,7 +173,7 @@ namespace WebApiSistema.Services
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddSeconds(30),
+                Expires = DateTime.UtcNow.AddDays(1),
                 SigningCredentials = creds
             };
 

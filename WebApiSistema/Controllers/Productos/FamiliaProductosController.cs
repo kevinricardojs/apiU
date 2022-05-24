@@ -13,7 +13,7 @@ namespace WebApiSistema.Controllers.Productos
 {
     [Route("productos/[controller]")]
     [ApiController]
-    public class FamiliaProductosController : ControllerBase
+    public class FamiliaProductosController : MainController
     {
         private readonly ApplicationDbContext _context;
 
@@ -81,7 +81,6 @@ namespace WebApiSistema.Controllers.Productos
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<FamiliaProducto>> PostFamiliaProducto(FamiliaProductoCreate familiaProducto)
-
         {
             FamiliaProducto f = new FamiliaProducto
             {

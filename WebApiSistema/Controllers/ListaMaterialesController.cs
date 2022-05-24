@@ -14,7 +14,7 @@ namespace WebApiSistema.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class ListaMaterialesController : ControllerBase
+    public class ListaMaterialesController : MainController
     {
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
@@ -83,6 +83,7 @@ namespace WebApiSistema.Controllers
         [HttpPost]
         public async Task<ActionResult<ListaMaterialesResponse>> PostListaMateriales(ListaMaterialesCreate listaMateriales)
         {
+            listaMateriales.SucursalID = GetSucursal();
             var lista = _mapper.Map<ListaMateriales>(listaMateriales);
             _context.ListaMateriales.Add(lista);
             await _context.SaveChangesAsync();

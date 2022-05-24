@@ -13,7 +13,7 @@ namespace WebApiSistema.Controllers.Configuraciones
 {
     [Route("configuraciones/[controller]")]
     [ApiController]
-    public class SucursalesController : ControllerBase
+    public class SucursalesController : MainController
     {
         private readonly ApplicationDbContext _context;
 
@@ -24,7 +24,7 @@ namespace WebApiSistema.Controllers.Configuraciones
 
         // GET: api/Sucursales
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Sucursal>>> GetSucursal()
+        public async Task<ActionResult<IEnumerable<Sucursal>>> GetASucursal()
         {
             return await _context.Sucursal.ToListAsync();
         }

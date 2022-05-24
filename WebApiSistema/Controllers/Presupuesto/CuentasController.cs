@@ -12,7 +12,7 @@ namespace WebApiSistema.Controllers.Presupuesto
 {
     [Route("presupuestos/[controller]")]
     [ApiController]
-    public class CuentasController : ControllerBase
+    public class CuentasController : MainController
     {
         private readonly ApplicationDbContext _context;
 

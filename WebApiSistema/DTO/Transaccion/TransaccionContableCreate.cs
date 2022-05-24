@@ -7,6 +7,7 @@ namespace WebApiSistema.DTO.Transaccion
     {
         public int Tipo { get; set; } = 3;
         public string Descripcion { get; set; }
+        public int SucursalID { get; set; }
         public ICollection<TransaccionDetalleContableCreate> Detalles { get; set; }
     }
 }

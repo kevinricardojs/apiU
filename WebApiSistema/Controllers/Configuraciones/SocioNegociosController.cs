@@ -4,13 +4,14 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebApiSistema.Data;
+using WebApiSistema.DTO.Configuraciones.SocioNegocio;
 using WebApiSistema.Models.Configuraciones;
 
 namespace WebApiSistema.Controllers.Configuraciones
 {
     [Route("configuraciones/[controller]")]
     [ApiController]
-    public class SocioNegociosController : ControllerBase
+    public class SocioNegociosController : MainController
     {
         private readonly ApplicationDbContext _context;
 
@@ -74,12 +75,21 @@ namespace WebApiSistema.Controllers.Configuraciones
         // POST: api/SocioNegocios
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<SocioNegocio>> PostSocioNegocio(SocioNegocio socioNegocio)
+        public async Task<ActionResult<SocioNegocio>> PostSocioNegocio(SocioNegocioCreate socioNegocio)
         {
-            _context.SocioNegocio.Add(socioNegocio);
+            SocioNegocio s = new SocioNegocio
+            {
+                Nombre = socioNegocio.Nombre,
+                Direccion = socioNegocio.Direccion,
+                Nit = socioNegocio.Nit,
+                Telefono = socioNegocio.Telefono,
+                Tipo = socioNegocio.Tipo,
+                SucursalID = GetSucursal()
+            };
+            _context.SocioNegocio.Add(s);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetSocioNegocio", new { id = socioNegocio.ID }, socioNegocio);
+            return CreatedAtAction("GetSocioNegocio", new { id = s.ID }, s);
         }
 
         // DELETE: api/SocioNegocios/5

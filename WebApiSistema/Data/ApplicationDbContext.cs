@@ -37,6 +37,7 @@ namespace WebApiSistema.Data
 
         // Presupuesto
         public DbSet<Cuenta> Cuenta { get; set; }
+        public DbSet<Presupuesto> Presupuesto { get; set; }
         public DbSet<CuentaPresupuesto> CuentaPresupuesto { get; set; }
 
         // Productos

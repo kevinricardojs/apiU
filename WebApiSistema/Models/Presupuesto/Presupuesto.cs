@@ -3,18 +3,17 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using WebApiSistema.Models.Configuraciones;
 
-namespace WebApiSistema.Models.Transacciones
+namespace WebApiSistema.Models.Presupuesto
 {
-    public class TransaccionContable
+    public class Presupuesto
     {
         [Key]
         public int ID { get; set; }
-        public DateTime FechaHora { get; set; } = DateTime.Now;
         public int SucursalID { get; set; }
         public Sucursal Sucursal { get; set; }
-        public int Tipo { get; set; }
-        public int CompraVentaID { get; set; }
+        public DateTime Creado { get; set; }
         public string Descripcion { get; set; }
-        public ICollection<TransaccionDetalleContable> Detalles { get; set; }
+        public int Estado { get; set; }
+        public ICollection<CuentaPresupuesto> Detalles { get; set; }
     }
 }

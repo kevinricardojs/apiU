@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using WebApiSistema.Services;
 using WebApiSistema.DTO.User;
+using System.Net;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebApiSistema.Controllers
 {
@@ -34,6 +37,7 @@ namespace WebApiSistema.Controllers
         }
         [HttpPost]
         [Route("CreateUser")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> CreateUser([FromBody] UserCreate user)
         {
             var result = await _userService.CreateUser(user);

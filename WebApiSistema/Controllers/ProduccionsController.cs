@@ -15,7 +15,7 @@ namespace WebApiSistema.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class ProduccionsController : ControllerBase
+    public class ProduccionsController : MainController
     {
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
@@ -85,6 +85,7 @@ namespace WebApiSistema.Controllers
         [HttpPost]
         public async Task<ActionResult<ProduccionCreateResponse>> PostProduccion(ProduccionCreate produccion)
         {
+            produccion.SucursalID = GetSucursal();
             var response = await _trInventario.Producir(produccion);
 
             //_context.Venta.Add(v);
