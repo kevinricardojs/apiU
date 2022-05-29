@@ -5,7 +5,6 @@ namespace WebApiSistema.DTO.Configuraciones.SocioNegocio
     {
         public string Nombre { get; set; }
         public string Telefono { get; set; }
-        public int SucursalID { get; set; }
         public string Direccion { get; set; }
         public string Nit { get; set; }
         public int Tipo { get; set; }

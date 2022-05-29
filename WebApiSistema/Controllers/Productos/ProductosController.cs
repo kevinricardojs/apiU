@@ -54,9 +54,9 @@ namespace WebApiSistema.Controllers.Productos
                 Descripcion = producto.Descripcion,
                 Precio = producto.Precio,
                 ProductoTipoID = producto.ProductoTipoID,
-                SucursalID = producto.SucursalID,
                 FamiliaProductoID = producto.FamiliaProductoID
             };
+            p.SucursalID = GetSucursal();
 
             _context.Entry(p).State = EntityState.Modified;
 
@@ -84,15 +84,15 @@ namespace WebApiSistema.Controllers.Productos
         [HttpPost]
         public async Task<ActionResult<Producto>> PostProducto(ProductoCreate producto)
         {
-            producto.SucursalID = GetSucursal();
+            
             Producto p = new Producto
             {
                 Descripcion = producto.Descripcion,
                 Precio = producto.Precio,
                 ProductoTipoID = producto.ProductoTipoID,
-                SucursalID = producto.SucursalID,
                 FamiliaProductoID = producto.FamiliaProductoID
             };
+            p.SucursalID = GetSucursal();
             _context.Producto.Add(p);
             await _context.SaveChangesAsync();
 

@@ -86,7 +86,7 @@ namespace WebApiSistema.Controllers.Productos
             {
                 Descripcion = familiaProducto.Descripcion,
                 CuentaID = familiaProducto.CuentaID,
-                CuentaIDO = familiaProducto.CuentaIDO
+                CuentaIDO = familiaProducto.CuentaIDO,
             };
             _context.FamiliaProducto.Add(f);
             await _context.SaveChangesAsync();

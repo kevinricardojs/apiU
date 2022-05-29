@@ -52,6 +52,7 @@ namespace WebApiSistema.Controllers.Productos
             {
                 ID = id,
                 Descripcion = productoTipo.Descripcion,
+                SucursalID = GetSucursal()
             };
 
             _context.Entry(p).State = EntityState.Modified;

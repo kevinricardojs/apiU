@@ -44,14 +44,17 @@ namespace WebApiSistema.Controllers.Configuraciones
         // PUT: api/SocioNegocios/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutSocioNegocio(int id, SocioNegocio socioNegocio)
+        public async Task<IActionResult> PutSocioNegocio(int id, SocioNegocioCreate socioNegocio)
         {
-            if (id != socioNegocio.ID)
+            SocioNegocio s = new SocioNegocio
             {
-                return BadRequest();
-            }
-
-            _context.Entry(socioNegocio).State = EntityState.Modified;
+                Nombre = socioNegocio.Nombre,
+                Direccion = socioNegocio.Direccion,
+                Telefono = socioNegocio.Telefono,
+                Tipo = socioNegocio.Tipo,
+            };
+            s.SucursalID = GetSucursal();
+            _context.Entry(s).State = EntityState.Modified;
 
             try
             {

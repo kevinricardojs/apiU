@@ -26,6 +26,7 @@ namespace WebApiSistema.Data
         // Configuraciones
         public DbSet<Empresa> Empresa { get; set; }
         public DbSet<Sucursal> Sucursal { get; set; }
+        public DbSet<UsuarioSucursal> UsuarioSucursal { get; set; }
 
         // Compras
         public DbSet<Compra> Compra { get; set; }
@@ -58,6 +59,8 @@ namespace WebApiSistema.Data
         // Produccion
         public DbSet<Produccion> Produccion { get; set; }
         public DbSet<ProduccionDetalles> ProduccionDetalles { get; set; }
+
+        public DbSet<SocioNegocio> SocioNegocio { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -94,8 +97,5 @@ namespace WebApiSistema.Data
                     .IsRequired();
             });
         }
-
-
-        public DbSet<SocioNegocio> SocioNegocio { get; set; }
     }
 }

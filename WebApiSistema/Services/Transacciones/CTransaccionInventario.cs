@@ -192,6 +192,7 @@ namespace WebApiSistema.Services.Transacciones
                 using var transaction = _context.Database.BeginTransaction();
                 TransaccionInventario tr = new();
                 TransaccionContable tc = new();
+                tc.SucursalID = compra.SucursalID;
 
 
                 tr.FechaHora = DateTime.Now;
