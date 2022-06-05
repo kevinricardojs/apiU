@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using WebApiSistema.Data;
 using WebApiSistema.DTO.Transaccion;
 using WebApiSistema.Models.Transacciones;
+using WebApiSistema.Services;
 
 namespace WebApiSistema.Controllers
 {
@@ -18,11 +19,12 @@ namespace WebApiSistema.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
-
-        public DiarioController(ApplicationDbContext context, IMapper mapper)
+        private readonly IDirectDB _directDB;
+        public DiarioController(ApplicationDbContext context, IMapper mapper, IDirectDB directDB)
         {
             _context = context;
             _mapper = mapper;
+            _directDB = directDB;
         }
 
         // GET: api/Productos

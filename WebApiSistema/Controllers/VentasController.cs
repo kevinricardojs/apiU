@@ -5,9 +5,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using WebApiSistema.Data;
 using WebApiSistema.DTO.Ventas;
 using WebApiSistema.Models.Venta;
+using WebApiSistema.Services;
 using WebApiSistema.Services.Transacciones;
 
 namespace WebApiSistema.Controllers
@@ -18,18 +20,28 @@ namespace WebApiSistema.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly ITransaccionInventario _trInventario;
+        private readonly IDirectDB _directDB;
 
-        public VentasController(ApplicationDbContext context, ITransaccionInventario trInventario)
+        public VentasController(ApplicationDbContext context,ITransaccionInventario trInventario, IDirectDB directDB)
         {
             _context = context;
             _trInventario = trInventario;
+            _directDB = directDB;
         }
 
         // GET: api/Ventas
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Venta>>> GetVenta()
+        public async Task<ActionResult<List<VentaDTO>>> GetVenta()
         {
-            return await _context.Venta.Where(c => c.SucursalID == GetSucursal()).ToListAsync();
+            int sucursalID = GetSucursal();
+            List<VentaDTO> lista = new List<VentaDTO>();
+            var list = await _directDB.GetListData($"CALL VentasRealizadas({sucursalID})");
+            if (list.Count > 0)
+            {
+                string json = JsonConvert.SerializeObject(list);
+                lista = JsonConvert.DeserializeObject<List<VentaDTO>>(json);
+            }
+            return lista;
         }
 
         // GET: api/Ventas/5

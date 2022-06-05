@@ -5,9 +5,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using WebApiSistema.Data;
 using WebApiSistema.DTO.Compras;
 using WebApiSistema.Models.Compra;
+using WebApiSistema.Services;
 using WebApiSistema.Services.Transacciones;
 
 namespace WebApiSistema.Controllers
@@ -18,19 +20,27 @@ namespace WebApiSistema.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly ITransaccionInventario _trInventario;
-
-        public ComprasController(ApplicationDbContext context, ITransaccionInventario trInventario)
+        private readonly IDirectDB _directDB;
+        public ComprasController(ApplicationDbContext context, ITransaccionInventario trInventario, IDirectDB directDB)
         {
             _context = context;
             _trInventario = trInventario;
+            _directDB = directDB;
         }
 
         // GET: api/Compras
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Compra>>> GetCompra()
+        public async Task<ActionResult<List<CompraDTO>>> GetCompra()
         {
             int sucursalID = GetSucursal();
-            return await _context.Compra.Where(c => c.SucursalID == sucursalID).ToListAsync();
+            List<CompraDTO> lista = new List<CompraDTO>();
+            var list = await _directDB.GetListData($"CALL ComprasRealizadas({sucursalID})");
+            if(list.Count > 0)
+            {
+                string json = JsonConvert.SerializeObject(list);
+                lista = JsonConvert.DeserializeObject<List<CompraDTO>>(json);
+            }
+            return lista;
         }
 
         // GET: api/Compras/5

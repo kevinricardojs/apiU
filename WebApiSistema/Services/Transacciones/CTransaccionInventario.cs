@@ -38,15 +38,16 @@ namespace WebApiSistema.Services.Transacciones
                 TransaccionContable tc = new();
                 TransaccionContable tcCobro = new();
 
-
                 tr.FechaHora = DateTime.Now;
                 tr.Tipo = 1;
                 tr.Detalles = new List<TransaccionDetalleInventario>();
 
+                tc.SucursalID = venta.SucursalID;
                 tc.FechaHora = tr.FechaHora;
                 tc.Tipo = 0;
                 tc.Detalles = new List<TransaccionDetalleContable>();
 
+                tcCobro.SucursalID = venta.SucursalID;
                 tcCobro.FechaHora = tr.FechaHora;
                 tcCobro.Tipo = 0;
                 tcCobro.Detalles = new List<TransaccionDetalleContable>();
@@ -384,6 +385,7 @@ namespace WebApiSistema.Services.Transacciones
                 tr.Tipo = 1;
                 tr.Detalles = new List<TransaccionDetalleInventario>();
 
+                tc.SucursalID = produccion.SucursalID;
                 tc.FechaHora = tr.FechaHora;
                 tc.Tipo = 0;
                 tc.Detalles = new List<TransaccionDetalleContable>();
