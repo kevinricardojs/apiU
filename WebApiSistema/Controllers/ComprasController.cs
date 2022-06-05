@@ -29,7 +29,8 @@ namespace WebApiSistema.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Compra>>> GetCompra()
         {
-            return await _context.Compra.ToListAsync();
+            int sucursalID = GetSucursal();
+            return await _context.Compra.Where(c => c.SucursalID == sucursalID).ToListAsync();
         }
 
         // GET: api/Compras/5

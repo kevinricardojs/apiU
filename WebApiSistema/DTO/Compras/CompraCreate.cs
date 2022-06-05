@@ -9,6 +9,7 @@ namespace WebApiSistema.DTO.Compras
     {
         public int SocioNegocioID { get; set; }
         public string FacturaSerie { get; set; }
+        public DateTime FacturaFecha { get; set; }
         public int SucursalID { get; set; }
         public ICollection<CompraCreateDetail> Detalles { get; set; }
     }

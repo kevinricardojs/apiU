@@ -10,6 +10,9 @@ using WebApiSistema.DTO.User;
 using System.Net;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using WebApiSistema.Models.Configuraciones;
+using Newtonsoft.Json;
+using WebApiSistema.DTO;
 
 namespace WebApiSistema.Controllers
 {
@@ -18,9 +21,12 @@ namespace WebApiSistema.Controllers
     public class AutenticacionController : ControllerBase
     {
         private readonly IUserService _userService;
-        public AutenticacionController(IUserService userService)
+        private readonly IDirectDB _directDB;
+
+        public AutenticacionController(IUserService userService, IDirectDB directDB)
         {
             _userService = userService;
+            _directDB = directDB;
         }
 
         [HttpPost]
@@ -47,6 +53,33 @@ namespace WebApiSistema.Controllers
             }
 
             return BadRequest(result);
+        }
+
+        [HttpGet]
+        [Route("Sucursales")]
+        public async Task<List<Sucursal>> GetSucursales(string email)
+        {
+            List<Sucursal> lista = new List<Sucursal>();
+            var l = await _directDB.GetListData($"CALL SucursalUsuario('{email}')");
+            if (l.Count > 0)
+            {
+                string json = JsonConvert.SerializeObject(l);
+                lista = JsonConvert.DeserializeObject<List<Sucursal>>(json);
+            }
+            return lista;
+        }
+
+        [HttpPost]
+        [Route("ValidarToken")]
+        public async Task<ActionResult<ResponseUserDTO>> ValidarToken([FromBody] PeticionTokenDTO peticion)
+        {
+            var resultado = await _userService.ValidarToken(peticion);
+            if (resultado.Success == true)
+            {
+                return Ok(resultado);
+            }
+
+            return BadRequest(resultado);
         }
     }
 }

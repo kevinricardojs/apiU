@@ -30,7 +30,7 @@ namespace WebApiSistema.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ListaMateriales>>> GetListaMateriales()
         {
-            return await _context.ListaMateriales.ToListAsync();
+            return await _context.ListaMateriales.Where(c => c.SucursalID == GetSucursal()).ToListAsync();
         }
 
         // GET: api/ListaMateriales/5

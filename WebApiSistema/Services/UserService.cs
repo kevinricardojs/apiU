@@ -14,6 +14,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.Extensions.Configuration;
 using System.IdentityModel.Tokens.Jwt;
+using WebApiSistema.DTO;
 
 namespace WebApiSistema.Services
 {
@@ -24,12 +25,14 @@ namespace WebApiSistema.Services
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
         private readonly string _tokenEncryptor;
-        public UserService(UserManager<User> userManager, ApplicationDbContext context, IMapper mapper, IConfiguration config)
+        private readonly TokenValidationParameters _tokenValidationParameters;
+        public UserService(UserManager<User> userManager, ApplicationDbContext context, IMapper mapper, IConfiguration config, TokenValidationParameters tokenValidationParameters)
         {
             _userManager = userManager;
             _context = context;
             _mapper = mapper;
             _tokenEncryptor = config.GetSection("AppSettings:Token").Value;
+            _tokenValidationParameters = tokenValidationParameters;
         }
 
         public async Task<ResponseUserDTO> VerifyUserCredentiasls(LoginDTO loginInfo)
@@ -51,7 +54,7 @@ namespace WebApiSistema.Services
             return new ResponseUserDTO
             {
                 Success = false,
-                Error = "Usuario o password incorrecto, verifique su información"
+                Error = "Email o password incorrecto, verifique su información"
             };
         }
 
@@ -163,10 +166,11 @@ namespace WebApiSistema.Services
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.UserName),
-                new Claim("SucursalID", SucursalID.ToString())
+                new Claim("SucursalID", SucursalID.ToString()),
+                new Claim(ClaimTypes.Email, user.Email),
             };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_tokenEncryptor));
+            var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_tokenEncryptor));
 
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
@@ -182,6 +186,95 @@ namespace WebApiSistema.Services
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
             return tokenHandler.WriteToken(token);
+        }
+
+        public async Task<ResponseUserDTO> ValidarToken(PeticionTokenDTO peticion)
+        {
+            var jwtTokenHandler = new JwtSecurityTokenHandler();
+
+            try
+            {
+                // Validacion del formato del token
+                var tokenVerificacion = jwtTokenHandler.ValidateToken(peticion.Token, _tokenValidationParameters, out var tokenValidado);
+                var email = tokenVerificacion.Claims.ToList().Find(c => c.Type == ClaimTypes.Email);
+
+                User user = await GetUserByEmail(email.Value);
+
+                // Validacion si coincide el algoritmo
+                if (tokenValidado is JwtSecurityToken jwtSecurityToken)
+                {
+                    var resultado = jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha512, StringComparison.InvariantCultureIgnoreCase);
+                    if (resultado == false)
+                    {
+                        return new ResponseUserDTO
+                        {
+                            Success = false,
+                            Error = "No coincide la encriptación",
+                            Token = null
+                        };
+                    }
+                }
+
+                var utcExpireDate = long.Parse(tokenVerificacion.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Exp).Value);
+
+                var tiempoDeExpiracion = UnixTimeStampToDateTime(utcExpireDate);
+
+                if (tiempoDeExpiracion < DateTime.UtcNow)
+                {
+                    return new ResponseUserDTO
+                    {
+                        Success = false,
+                        Error = "El token ha expirado por favor inicia sesión nuevamente",
+                        Token = null
+                    };
+                }
+
+                return new ResponseUserDTO
+                {
+                    Success = true,
+                    Error = null,
+                    Token = peticion.Token,
+                    user = new UserCreateReponse
+                    {
+                        Apellidos = user.Apellidos,
+                        Email = user.Email,
+                        Nombres = user.Nombres,
+                        ID = user.Id,
+                        UserName = user.UserName
+                    }
+                };
+            }
+            catch (Exception error)
+            {
+                if (error.Message.Contains("Lifetime validation failed. The token is expired."))
+                {
+
+                    return new ResponseUserDTO()
+                    {
+                        Success = false,
+                        Error = "El token ha expirado por favor inicia sesión nuevamente",
+                        Token = null
+                    };
+
+                }
+                else
+                {
+                    return new ResponseUserDTO()
+                    {
+                        Success = false,
+                        Error = "El token ha expirado por favor inicia sesión nuevamente",
+                        Token = null
+                    };
+                }
+            }
+        }
+
+
+        private DateTime UnixTimeStampToDateTime(long unixTimeStamp)
+        {
+            var dateTimeVal = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+            dateTimeVal = dateTimeVal.AddSeconds(unixTimeStamp).ToLocalTime();
+            return dateTimeVal;
         }
     }
 }

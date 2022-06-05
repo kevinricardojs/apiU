@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebApiSistema.Data;
 
 namespace WebApiSistema.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220605133450_add sucursal")]
+    partial class addsucursal
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -389,14 +391,9 @@ namespace WebApiSistema.Migrations
                     b.Property<int>("ListaMaterialesID")
                         .HasColumnType("int");
 
-                    b.Property<int>("SucursalID")
-                        .HasColumnType("int");
-
                     b.HasKey("ID");
 
                     b.HasIndex("ListaMaterialesID");
-
-                    b.HasIndex("SucursalID");
 
                     b.ToTable("Produccion");
                 });
@@ -1048,15 +1045,7 @@ namespace WebApiSistema.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("WebApiSistema.Models.Configuraciones.Sucursal", "Sucursal")
-                        .WithMany()
-                        .HasForeignKey("SucursalID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("ListaMateriales");
-
-                    b.Navigation("Sucursal");
                 });
 
             modelBuilder.Entity("WebApiSistema.Models.Produccion.ProduccionDetalles", b =>

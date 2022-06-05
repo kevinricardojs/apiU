@@ -48,19 +48,21 @@ namespace WebApiSistema.Controllers.Configuraciones
         {
             SocioNegocio s = new SocioNegocio
             {
+                ID = id,
+                Nit = socioNegocio.Nit,
                 Nombre = socioNegocio.Nombre,
                 Direccion = socioNegocio.Direccion,
                 Telefono = socioNegocio.Telefono,
                 Tipo = socioNegocio.Tipo,
+                SucursalID = GetSucursal()
             };
-            s.SucursalID = GetSucursal();
             _context.Entry(s).State = EntityState.Modified;
 
             try
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (DbUpdateConcurrencyException e)
             {
                 if (!SocioNegocioExists(id))
                 {

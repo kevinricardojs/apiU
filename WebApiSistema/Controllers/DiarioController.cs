@@ -29,7 +29,7 @@ namespace WebApiSistema.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TransaccionContable>>> GetTransaccionContable()
         {
-            return await _context.TransaccionContable.ToListAsync();
+            return await _context.TransaccionContable.Where(c => c.SucursalID == GetSucursal()).ToListAsync();
         }
 
         // GET: api/TransaccionContables/5

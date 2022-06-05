@@ -10,7 +10,7 @@ using WebApiSistema.Models.Presupuesto;
 
 namespace WebApiSistema.Controllers.Presupuesto
 {
-    [Route("presupuestos/[controller]")]
+    [Route("presupuesto/[controller]")]
     [ApiController]
     public class CuentasController : MainController
     {

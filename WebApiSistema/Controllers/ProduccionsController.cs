@@ -32,7 +32,7 @@ namespace WebApiSistema.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Produccion>>> GetProduccion()
         {
-            return await _context.Produccion.ToListAsync();
+            return await _context.Produccion.Where(c => c.SucursalID == GetSucursal()).ToListAsync();
         }
 
         // GET: api/Produccions/5
