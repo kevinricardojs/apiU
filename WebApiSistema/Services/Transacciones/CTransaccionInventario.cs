@@ -8,11 +8,13 @@ using WebApiSistema.Data;
 using WebApiSistema.DTO;
 using WebApiSistema.DTO.Compras;
 using WebApiSistema.DTO.Produccion;
+using WebApiSistema.DTO.Salidas;
 using WebApiSistema.DTO.Ventas;
 using WebApiSistema.Models.Compra;
 using WebApiSistema.Models.Helpers;
 using WebApiSistema.Models.Presupuesto;
 using WebApiSistema.Models.Produccion;
+using WebApiSistema.Models.Salida;
 using WebApiSistema.Models.Transacciones;
 using WebApiSistema.Models.Venta;
 
@@ -492,6 +494,111 @@ namespace WebApiSistema.Services.Transacciones
             catch (Exception e)
             {
                 return new ResponseProduccionDTO
+                {
+                    Success = false,
+                    Error = $"Ha ocurrido un error Error:{e.Message}"
+                };
+            }
+
+        }
+
+        public async Task<ResponseSalidaDTO> SalidaStock(SalidaCreate salida)
+        {
+            try
+            {
+                using var transaction = _context.Database.BeginTransaction();
+                TransaccionInventario tr = new();
+                TransaccionContable tc = new();
+
+                tr.FechaHora = DateTime.Now;
+                tr.Tipo = 1;
+                tr.Detalles = new List<TransaccionDetalleInventario>();
+
+                tc.SucursalID = salida.SucursalID;
+                tc.FechaHora = tr.FechaHora;
+                tc.Tipo = 0;
+                tc.Detalles = new List<TransaccionDetalleContable>();
+
+                foreach (var linea in salida.Detalles)
+                {
+                    StockProducto stock = await buscarStock(linea.ProductoID);
+                    if (stock.ProductoID == linea.ProductoID && stock.Total >= linea.Cantidad)
+                    {
+                        // Detalle de inventario
+                        decimal valorTransaccion = stock.PrecioPromedio * linea.Cantidad;
+                        tr.Detalles.Add(new TransaccionDetalleInventario
+                        {
+
+                            Salida = linea.Cantidad,
+                            Entrada = 0,
+                            Linea = linea.NoLinea,
+                            ProductoID = linea.ProductoID,
+                            SucursalID = salida.SucursalID,
+                            FechaHora = tr.FechaHora,
+                            Valor = valorTransaccion
+                        });
+
+                        // Transaccion de sacar de inventario
+                        // Cuenta Inventario PT
+                        tc.Detalles.Add(new TransaccionDetalleContable
+                        {
+                            CuentaID = stock.CuentaID,
+                            Debe = 0,
+                            Haber = valorTransaccion,
+                            FechaHora = tc.FechaHora,
+                            Linea = linea.NoLinea,
+                            SucursalID = salida.SucursalID
+                        });
+                        tc.Detalles.Add(new TransaccionDetalleContable
+                        {
+                            CuentaID = stock.CuentaIDO,
+                            Debe = valorTransaccion,
+                            Haber = 0,
+                            FechaHora = tc.FechaHora,
+                            Linea = linea.NoLinea,
+                            SucursalID = salida.SucursalID
+                        });
+                    }
+                    else
+                    {
+                        return new ResponseSalidaDTO
+                        {
+                            Success = false,
+                            Linea = linea.NoLinea,
+                            Error = $"El Producto No Linea {linea.NoLinea} ID {stock.ProductoID} - {stock.Descripcion} no cuenta con suficiente stock"
+                        };
+                    }
+
+                }
+
+
+                // Mapear venta generica a salida para BD
+                Salida s = _mapper.Map<Salida>(salida);
+                s.FechaHora = tr.FechaHora;
+
+                _context.Salida.Add(s);
+                await _context.SaveChangesAsync();
+                // Guardando la transaccion de la salida
+                tr.CompraVentaID = s.ID;
+                _context.TransaccionInventario.Add(tr);
+                await _context.SaveChangesAsync();
+
+                tc.CompraVentaID = s.ID;
+                _context.TransaccionContable.Add(tc);
+                await _context.SaveChangesAsync();
+
+                var salidaCreada = _mapper.Map<SalidaCreateResponse>(s);
+                ResponseSalidaDTO response = new ResponseSalidaDTO
+                {
+                    Success = true,
+                    Salida = salidaCreada
+                };
+                transaction.Commit();
+                return response;
+            }
+            catch (Exception e)
+            {
+                return new ResponseSalidaDTO
                 {
                     Success = false,
                     Error = $"Ha ocurrido un error Error:{e.Message}"

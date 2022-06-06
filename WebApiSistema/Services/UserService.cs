@@ -197,9 +197,10 @@ namespace WebApiSistema.Services
                 // Validacion del formato del token
                 var tokenVerificacion = jwtTokenHandler.ValidateToken(peticion.Token, _tokenValidationParameters, out var tokenValidado);
                 var email = tokenVerificacion.Claims.ToList().Find(c => c.Type == ClaimTypes.Email);
+                var sucursal = tokenVerificacion.Claims.ToList().Find(c => c.Type == "SucursalID");
 
                 User user = await GetUserByEmail(email.Value);
-
+                user.Sucursal = Int32.Parse(sucursal.Value);
                 // Validacion si coincide el algoritmo
                 if (tokenValidado is JwtSecurityToken jwtSecurityToken)
                 {
@@ -240,7 +241,8 @@ namespace WebApiSistema.Services
                         Email = user.Email,
                         Nombres = user.Nombres,
                         ID = user.Id,
-                        UserName = user.UserName
+                        UserName = user.UserName,
+                        Sucursal = user.Sucursal
                     }
                 };
             }

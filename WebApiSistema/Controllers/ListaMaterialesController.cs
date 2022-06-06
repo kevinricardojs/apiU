@@ -30,7 +30,12 @@ namespace WebApiSistema.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ListaMateriales>>> GetListaMateriales()
         {
-            return await _context.ListaMateriales.Where(c => c.SucursalID == GetSucursal()).ToListAsync();
+            var lista = await _context.ListaMateriales.Where(s => s.SucursalID == GetSucursal()).Include(m => m.Materiales).ToListAsync();
+            //foreach(var l in lista)
+            //{
+            //    l.Materiales = await_context.
+            //}
+            return lista;
         }
 
         // GET: api/ListaMateriales/5
@@ -84,6 +89,7 @@ namespace WebApiSistema.Controllers
         public async Task<ActionResult<ListaMaterialesResponse>> PostListaMateriales(ListaMaterialesCreate listaMateriales)
         {
             listaMateriales.SucursalID = GetSucursal();
+            listaMateriales.Creado = DateTime.Now;
             var lista = _mapper.Map<ListaMateriales>(listaMateriales);
             _context.ListaMateriales.Add(lista);
             await _context.SaveChangesAsync();

@@ -15,13 +15,13 @@ namespace WebApiSistema.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class ProduccionsController : MainController
+    public class ProduccionesController : MainController
     {
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
         private readonly ITransaccionInventario _trInventario;
 
-        public ProduccionsController(ApplicationDbContext context, IMapper mapper, ITransaccionInventario trInventario)
+        public ProduccionesController(ApplicationDbContext context, IMapper mapper, ITransaccionInventario trInventario)
         {
             _context = context;
             _mapper = mapper;

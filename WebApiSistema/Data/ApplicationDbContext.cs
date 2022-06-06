@@ -9,6 +9,7 @@ using WebApiSistema.Models.Productos;
 using WebApiSistema.Models.Transacciones;
 using WebApiSistema.Models.Venta;
 using WebApiSistema.Models.Produccion;
+using WebApiSistema.Models.Salida;
 
 namespace WebApiSistema.Data
 {
@@ -62,6 +63,9 @@ namespace WebApiSistema.Data
 
         public DbSet<SocioNegocio> SocioNegocio { get; set; }
 
+        // Salida
+        public DbSet<Salida> Salida { get; set; }
+        public DbSet<SalidaDetalle> SalidaDetalles { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
