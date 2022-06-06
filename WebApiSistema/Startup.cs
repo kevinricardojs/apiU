@@ -93,7 +93,7 @@ namespace WebApiSistema
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseCors(options => {
-                options.WithOrigins("http://localhost:3000", "http://ec2-18-219-235-189.us-east-2.compute.amazonaws.com");
+                options.WithOrigins("http://localhost:3000", "http://ec2-18-219-235-189.us-east-2.compute.amazonaws.com", "http://ec2-18-219-235-189.us-east-2.compute.amazonaws.com:200");
                 options.AllowCredentials();
                 options.AllowAnyMethod();
                 options.AllowAnyHeader();
