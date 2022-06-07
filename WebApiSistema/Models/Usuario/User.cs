@@ -13,6 +13,7 @@ namespace WebApiSistema.Models.Usuario
         public int Status { get; set; } = 1;
         public int Empresa { get; set; }
         public int Sucursal { get; set; }
+        public int IsAdmin { get; set; }
         public virtual ICollection<UserRole> UserRoles { get; set; }
         [NotMapped]
         public virtual ICollection<String> RoleNames { get; set; }

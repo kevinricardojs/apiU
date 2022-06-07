@@ -49,7 +49,7 @@ namespace WebApiSistema.Controllers
             var result = await _userService.CreateUser(user);
             if (result.Success)
             {
-                return Ok(result);
+                return Ok(result.user);
             }
 
             return BadRequest(result);
