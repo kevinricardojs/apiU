@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebApiSistema.Data;
 
 namespace WebApiSistema.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220607035936_aquiler")]
+    partial class aquiler
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -603,60 +605,6 @@ namespace WebApiSistema.Migrations
                     b.HasIndex("SalidaID");
 
                     b.ToTable("SalidaDetalles");
-                });
-
-            modelBuilder.Entity("WebApiSistema.Models.Servicio.Servicio", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("FechaCreado")
-                        .HasColumnType("datetime");
-
-                    b.Property<string>("Observaciones")
-                        .HasColumnType("text");
-
-                    b.Property<int>("SocioNegocioID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SucursalID")
-                        .HasColumnType("int");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("SocioNegocioID");
-
-                    b.HasIndex("SucursalID");
-
-                    b.ToTable("Servicio");
-                });
-
-            modelBuilder.Entity("WebApiSistema.Models.Servicio.ServicioDetalle", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<int>("NoLinea")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Precio")
-                        .HasColumnType("decimal(18, 2)");
-
-                    b.Property<int>("ProductoID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ServicioID")
-                        .HasColumnType("int");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("ProductoID");
-
-                    b.HasIndex("ServicioID");
-
-                    b.ToTable("ServicioDetalles");
                 });
 
             modelBuilder.Entity("WebApiSistema.Models.Transacciones.TransaccionContable", b =>
@@ -1345,44 +1293,6 @@ namespace WebApiSistema.Migrations
                     b.Navigation("Salida");
                 });
 
-            modelBuilder.Entity("WebApiSistema.Models.Servicio.Servicio", b =>
-                {
-                    b.HasOne("WebApiSistema.Models.Configuraciones.SocioNegocio", "SocioNegocio")
-                        .WithMany()
-                        .HasForeignKey("SocioNegocioID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("WebApiSistema.Models.Configuraciones.Sucursal", "Sucursal")
-                        .WithMany()
-                        .HasForeignKey("SucursalID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("SocioNegocio");
-
-                    b.Navigation("Sucursal");
-                });
-
-            modelBuilder.Entity("WebApiSistema.Models.Servicio.ServicioDetalle", b =>
-                {
-                    b.HasOne("WebApiSistema.Models.Productos.Producto", "Producto")
-                        .WithMany()
-                        .HasForeignKey("ProductoID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("WebApiSistema.Models.Servicio.Servicio", "Servicio")
-                        .WithMany("Detalles")
-                        .HasForeignKey("ServicioID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Producto");
-
-                    b.Navigation("Servicio");
-                });
-
             modelBuilder.Entity("WebApiSistema.Models.Transacciones.TransaccionContable", b =>
                 {
                     b.HasOne("WebApiSistema.Models.Configuraciones.Sucursal", "Sucursal")
@@ -1541,11 +1451,6 @@ namespace WebApiSistema.Migrations
                 });
 
             modelBuilder.Entity("WebApiSistema.Models.Produccion.Produccion", b =>
-                {
-                    b.Navigation("Detalles");
-                });
-
-            modelBuilder.Entity("WebApiSistema.Models.Servicio.Servicio", b =>
                 {
                     b.Navigation("Detalles");
                 });

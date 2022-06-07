@@ -5,16 +5,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WebApiSistema.Data;
-using WebApiSistema.DTO;
+using WebApiSistema.DTO.Alquiler;
 using WebApiSistema.DTO.Compras;
 using WebApiSistema.DTO.Produccion;
 using WebApiSistema.DTO.Salidas;
+using WebApiSistema.DTO.Servicio;
 using WebApiSistema.DTO.Ventas;
+using WebApiSistema.Models.Alquiler;
 using WebApiSistema.Models.Compra;
 using WebApiSistema.Models.Helpers;
 using WebApiSistema.Models.Presupuesto;
 using WebApiSistema.Models.Produccion;
 using WebApiSistema.Models.Salida;
+using WebApiSistema.Models.Servicio;
 using WebApiSistema.Models.Transacciones;
 using WebApiSistema.Models.Venta;
 
@@ -599,6 +602,176 @@ namespace WebApiSistema.Services.Transacciones
             catch (Exception e)
             {
                 return new ResponseSalidaDTO
+                {
+                    Success = false,
+                    Error = $"Ha ocurrido un error Error:{e.Message}"
+                };
+            }
+
+        }
+
+        public async Task<ResponseAlquilerDTO> Alquiler(AlquilerCreate alquiler)
+        {
+            try
+            {
+                using var transaction = _context.Database.BeginTransaction();
+                TransaccionContable tcCobro = new();
+
+                tcCobro.SucursalID = alquiler.SucursalID;
+                tcCobro.FechaHora = DateTime.Now;
+                tcCobro.Tipo = 0;
+                tcCobro.Detalles = new List<TransaccionDetalleContable>();
+
+                foreach (var alquilerLinea in alquiler.Detalles)
+                {
+                    StockProducto stock = await buscarStock(alquilerLinea.ProductoID);
+
+                        // Transaccion de pagar
+                        tcCobro.Detalles.Add(new TransaccionDetalleContable
+                        {
+                            CuentaID = stock.CuentaIDO,
+                            Debe = 0,
+                            Haber = alquilerLinea.Precio,
+                            FechaHora = tcCobro.FechaHora,
+                            Linea = alquilerLinea.NoLinea,
+                            SucursalID = alquiler.SucursalID
+                        });
+                }
+                Cuenta cuentaIva = await CuentaIvaVenta();
+                Cuenta cuentaBanco = await CuentaBanco();
+                Cuenta cuentaCostoVenta = await CuentaCostoVenta();
+                decimal total = alquiler.Detalles.Sum(x => x.Precio);
+                decimal totalSinIva = total / (decimal)1.12;
+                decimal totalProductos = tcCobro.Detalles.Sum(x => x.Haber);
+
+                tcCobro.Detalles.Add(new TransaccionDetalleContable
+                {
+                    CuentaID = cuentaIva.ID,
+                    Debe = 0,
+                    Haber = total - totalSinIva,
+                    FechaHora = tcCobro.FechaHora,
+                    Linea = tcCobro.Detalles.Count,
+                    SucursalID = alquiler.SucursalID
+                });
+
+                tcCobro.Detalles.Add(new TransaccionDetalleContable
+                {
+                    CuentaID = cuentaBanco.ID,
+                    Debe = total,
+                    Haber = 0,
+                    FechaHora = tcCobro.FechaHora,
+                    Linea = tcCobro.Detalles.Count,
+                    SucursalID = alquiler.SucursalID
+                });
+
+                // Mapear venta generica a venta para BD
+                Alquiler v = _mapper.Map<Alquiler>(alquiler);
+                v.FechaCreado = tcCobro.FechaHora;
+
+                _context.Alquiler.Add(v);
+                await _context.SaveChangesAsync();
+
+                tcCobro.CompraVentaID = v.ID;
+                _context.TransaccionContable.Add(tcCobro);
+                await _context.SaveChangesAsync();
+
+                var alquilerCreada = _mapper.Map<AlquilerCreateResponse>(v);
+                ResponseAlquilerDTO response = new ResponseAlquilerDTO
+                {
+                    Success = true,
+                    Alquiler = alquilerCreada
+                };
+                transaction.Commit();
+                return response;
+            }
+            catch (Exception e)
+            {
+                return new ResponseAlquilerDTO
+                {
+                    Success = false,
+                    Error = $"Ha ocurrido un error Error:{e.Message}"
+                };
+            }
+
+        }
+
+        public async Task<ResponseServicioDTO> Servicio(ServicioCreate servicio)
+        {
+            try
+            {
+                using var transaction = _context.Database.BeginTransaction();
+                TransaccionContable tcCobro = new();
+
+                tcCobro.SucursalID = servicio.SucursalID;
+                tcCobro.FechaHora = DateTime.Now;
+                tcCobro.Tipo = 0;
+                tcCobro.Detalles = new List<TransaccionDetalleContable>();
+
+                foreach (var servicioLinea in servicio.Detalles)
+                {
+                    StockProducto stock = await buscarStock(servicioLinea.ProductoID);
+
+                    // Transaccion de pagar
+                    tcCobro.Detalles.Add(new TransaccionDetalleContable
+                    {
+                        CuentaID = stock.CuentaIDO,
+                        Debe = 0,
+                        Haber = servicioLinea.Precio,
+                        FechaHora = tcCobro.FechaHora,
+                        Linea = servicioLinea.NoLinea,
+                        SucursalID = servicio.SucursalID
+                    });
+                }
+                Cuenta cuentaIva = await CuentaIvaVenta();
+                Cuenta cuentaBanco = await CuentaBanco();
+                Cuenta cuentaCostoVenta = await CuentaCostoVenta();
+                decimal total = servicio.Detalles.Sum(x => x.Precio);
+                decimal totalSinIva = total / (decimal)1.12;
+                decimal totalProductos = tcCobro.Detalles.Sum(x => x.Haber);
+
+                tcCobro.Detalles.Add(new TransaccionDetalleContable
+                {
+                    CuentaID = cuentaIva.ID,
+                    Debe = 0,
+                    Haber = total - totalSinIva,
+                    FechaHora = tcCobro.FechaHora,
+                    Linea = tcCobro.Detalles.Count,
+                    SucursalID = servicio.SucursalID
+                });
+
+                tcCobro.Detalles.Add(new TransaccionDetalleContable
+                {
+                    CuentaID = cuentaBanco.ID,
+                    Debe = total,
+                    Haber = 0,
+                    FechaHora = tcCobro.FechaHora,
+                    Linea = tcCobro.Detalles.Count,
+                    SucursalID = servicio.SucursalID
+                });
+
+                // Mapear venta generica a venta para BD
+                Servicio v = _mapper.Map<Servicio>(servicio);
+                v.FechaCreado = tcCobro.FechaHora;
+
+                _context.Servicio.Add(v);
+                await _context.SaveChangesAsync();
+
+                tcCobro.CompraVentaID = v.ID;
+                _context.TransaccionContable.Add(tcCobro);
+                await _context.SaveChangesAsync();
+
+                var servicioCreada = _mapper.Map<ServicioCreateResponse>(v);
+                ResponseServicioDTO response = new ResponseServicioDTO
+                {
+                    Success = true,
+                    Servicio = servicioCreada
+                };
+                transaction.Commit();
+                return response;
+            }
+            catch (Exception e)
+            {
+                return new ResponseServicioDTO
                 {
                     Success = false,
                     Error = $"Ha ocurrido un error Error:{e.Message}"

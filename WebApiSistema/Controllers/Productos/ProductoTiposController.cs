@@ -26,7 +26,7 @@ namespace WebApiSistema.Controllers.Productos
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ProductoTipo>>> GetProductoTipo()
         {
-            return await _context.ProductoTipo.Where(c => c.SucursalID == GetSucursal()).ToListAsync();
+            return await _context.ProductoTipo.ToListAsync();
         }
 
         // GET: api/ProductoTipos/5

@@ -1,14 +1,18 @@
 ﻿using AutoMapper;
+using WebApiSistema.DTO.Alquiler;
 using WebApiSistema.DTO.Compras;
 using WebApiSistema.DTO.ListaMateriales;
 using WebApiSistema.DTO.Produccion;
 using WebApiSistema.DTO.Salidas;
+using WebApiSistema.DTO.Servicio;
 using WebApiSistema.DTO.Transaccion;
 using WebApiSistema.DTO.User;
 using WebApiSistema.DTO.Ventas;
+using WebApiSistema.Models.Alquiler;
 using WebApiSistema.Models.Compra;
 using WebApiSistema.Models.Produccion;
 using WebApiSistema.Models.Salida;
+using WebApiSistema.Models.Servicio;
 using WebApiSistema.Models.Transacciones;
 using WebApiSistema.Models.Usuario;
 using WebApiSistema.Models.Venta;
@@ -68,6 +72,21 @@ namespace WebApiSistema.Mapper
             // Devolver Salida
             CreateMap<Salida, SalidaCreateResponse>();
             CreateMap<SalidaDetalle, SalidaCreateResponseDetail>();
+
+            // Alquiler
+            CreateMap<AlquilerCreate, Alquiler>();
+            CreateMap<AlquilerCreateDetalle, AlquilerDetalle>();
+
+            // Devolver Alquiler
+            CreateMap<Alquiler, AlquilerCreateResponse>();
+            CreateMap<AlquilerDetalle, AlquilerCreateResponseDetail>();
+            // Servicio
+            CreateMap<ServicioCreate, Servicio>();
+            CreateMap<ServicioCreateDetalle, ServicioDetalle>();
+
+            // Devolver Servicio
+            CreateMap<Servicio, ServicioCreateResponse>();
+            CreateMap<ServicioDetalle, ServicioCreateResponseDetail>();
         }
     }
 }

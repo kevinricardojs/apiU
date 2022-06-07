@@ -10,6 +10,8 @@ using WebApiSistema.Models.Transacciones;
 using WebApiSistema.Models.Venta;
 using WebApiSistema.Models.Produccion;
 using WebApiSistema.Models.Salida;
+using WebApiSistema.Models.Alquiler;
+using WebApiSistema.Models.Servicio;
 
 namespace WebApiSistema.Data
 {
@@ -66,6 +68,14 @@ namespace WebApiSistema.Data
         // Salida
         public DbSet<Salida> Salida { get; set; }
         public DbSet<SalidaDetalle> SalidaDetalles { get; set; }
+
+        // Alquiler
+        public DbSet<Alquiler> Alquiler { get; set; }
+        public DbSet<AlquilerDetalle> AlquilerDetalles { get; set; }
+
+        // Servicio
+        public DbSet<Servicio> Servicio { get; set; }
+        public DbSet<ServicioDetalle> ServicioDetalles { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
