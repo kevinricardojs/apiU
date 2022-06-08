@@ -8,7 +8,7 @@ using WebApiSistema.Data;
 using WebApiSistema.DTO.Presupuesto.Cuentas;
 using WebApiSistema.Models.Presupuesto;
 
-namespace WebApiSistema.Controllers.Presupuesto
+namespace WebApiSistema.Controllers.Presupuestos
 {
     [Route("presupuesto/[controller]")]
     [ApiController]
