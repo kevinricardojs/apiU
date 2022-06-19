@@ -387,7 +387,7 @@ namespace WebApiSistema.Services.Transacciones
                 TransaccionContable tc = new();
 
                 tr.FechaHora = DateTime.Now;
-                tr.Tipo = 1;
+                tr.Tipo = 2;
                 tr.Detalles = new List<TransaccionDetalleInventario>();
 
                 tc.SucursalID = produccion.SucursalID;
